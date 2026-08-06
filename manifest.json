@@ -1,0 +1,16 @@
+{
+  "name": "Simulador de examen UNAM",
+  "short_name": "Simulador UNAM",
+  "description": "Práctica, simulacro cronometrado por área y reto CONAMAT para el examen de admisión de la UNAM.",
+  "start_url": "./simulador-unam.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FBFCFC",
+  "theme_color": "#10233F",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
