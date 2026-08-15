@@ -73,6 +73,10 @@
   .chip:hover{border-color:var(--azul)}
   .len{display:flex;flex-wrap:wrap;gap:8px}
   .count{font-family:var(--sans);font-size:13px;color:var(--gris);margin-top:12px}
+  .liga{font:inherit;color:var(--tinta);background:none;border:0;padding:0;
+        text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+  .liga:hover{opacity:.65}
+  .liga:focus-visible{outline:2px solid var(--tinta);outline-offset:3px;border-radius:2px}
   .go{
     margin-top:28px;width:100%;padding:16px;border:none;cursor:pointer;
     background:var(--tinta);color:#fff;font-family:var(--sans);font-size:15px;font-weight:600;
@@ -224,6 +228,7 @@
 
   /* ---------- ponderación en portada y resultados ---------- */
   .warn{font-style:normal;color:var(--mal);font-size:11.5px}
+  .aviso{font-style:normal;color:var(--gris);font-size:11.5px}
   .peso{font-style:normal;color:var(--gris);font-size:11.5px;font-family:var(--sans)}
   .row.tot{font-weight:700;border-bottom:none}
   .nota{font-family:var(--sans);font-size:12.5px;color:var(--gris);margin-top:12px;line-height:1.5}
@@ -275,7 +280,8 @@
   <div id="opcAjustes" class="block">
     <h2>Ajustes</h2>
     <div class="chips" id="ajustes"></div>
-    <p class="nota">Barajar opciones cambia el orden de las respuestas en cada intento, así que el mismo reactivo no se contesta de memoria. Los reactivos de reto son los problemas de concurso: quedan fuera salvo que los pidas. Razonamiento no entra en ningún simulacro por área, pero está disponible en práctica.</p>
+    <p class="count" id="memoria"></p>
+    <p class="nota">No repetir reactivos manda hasta el final de la fila los que ya te tocaron, así que cada examen empieza por lo que no has visto. Barajar opciones cambia el orden de las respuestas, para que el mismo reactivo no se conteste de memoria. Los reactivos de reto son los problemas de concurso: quedan fuera salvo que los pidas. Razonamiento no entra en ningún simulacro por área, pero está disponible en práctica.</p>
   </div>
 
   <div id="opcReto" class="block hidden">
@@ -285,12 +291,16 @@
 
   <div id="opcSim" class="block hidden">
     <h2>Modelo de examen</h2>
+    <p class="sub">Institución</p>
+    <div class="chips" id="instituciones"></div>
+    <p class="sub">Área</p>
     <div class="chips" id="areas"></div>
     <p class="sub">Versión</p>
     <div class="chips" id="versiones"></div>
     <p class="perfil" id="perfilNom"></p>
     <div class="bymat" id="tablaPesos"></div>
-    <p class="nota">120 reactivos en 3 horas, agrupados por materia y sin retroalimentación hasta el final. Por defecto cada intento es un examen nuevo («Libre»), para que no memorices las respuestas. Si quieres repetir exactamente el mismo o comparar resultados con alguien más, elige una versión numerada: esa sí arma siempre el mismo examen.</p>
+    <p class="nota" id="notaSim"></p>
+    <p class="nota">Por defecto cada intento es un examen nuevo («Libre»), para que no memorices las respuestas. Si quieres repetir exactamente el mismo o comparar resultados con alguien más, elige una versión numerada: esa sí arma siempre el mismo examen, y por eso ignora la opción de no repetir reactivos.</p>
   </div>
 
   <button class="go" id="start">Empezar</button>
@@ -1342,11 +1352,134 @@ const BANK = [
       "Los sumandos van de k = 2 hasta k = 2003:  2003 - 2 + 1 = 2002",
       "Suma total = 2002",
       "Nota: no hace falta la formula de cocientes notables"]}
+,
+
+/* ---------------- INGLÉS · IPN ----------------
+   El IPN evalúa comprensión de lectura en inglés: 10 reactivos que no
+   suman a tu puntaje de admisión, pero sí aparecen en el examen. Las
+   explicaciones van en español a propósito. */
+
+{s:"Inglés",t:"Reading · main idea",lec:"ing1",q:"What is the main idea of the text?",o:["Coral reefs are the largest structures built by living organisms","Rising sea temperatures are damaging coral reefs and the species that depend on them","Scientists disagree about the causes of coral bleaching","Tourism is the main source of income for coastal communities"],a:1,
+ key:"La idea principal sostiene todo el texto. Aquí cada párrafo vuelve al mismo punto: el calentamiento del mar está dañando los arrecifes."},
+
+{s:"Inglés",t:"Reading · vocabulary in context",lec:"ing1",q:"In the second paragraph, the word «expel» is closest in meaning to:",o:["absorb","push out","protect","feed"],a:1,
+ key:"«Expel» es expulsar. En el texto el coral expulsa las algas que vivían en él, y por eso pierde el color."},
+
+{s:"Inglés",t:"Reading · inference",lec:"ing1",q:"It can be inferred from the text that coral bleaching:",o:["kills the coral immediately","is always permanent","can be reversed if the water cools soon enough","only affects reefs in the Pacific Ocean"],a:2,
+ key:"El texto dice que el coral puede recuperarse si las condiciones vuelven a la normalidad a tiempo. Inferir es concluir algo que el texto sostiene sin decirlo con esas palabras."},
+
+{s:"Inglés",t:"Reading · reference",lec:"ing1",q:"In the third paragraph, the word «they» refers to:",o:["the scientists","the algae","the corals","the tourists"],a:2,
+ key:"Un pronombre remite al sustantivo más cercano que concuerda en número y sentido. Aquí «they» retoma a los corales, que son los que quedan sin alimento."},
+
+{s:"Inglés",t:"Reading · detail",lec:"ing1",q:"According to the text, corals get most of their food from:",o:["small fish","the algae that live in their tissue","plankton carried by currents","minerals in the sand"],a:1,
+ key:"Reactivo de detalle: la respuesta está literal en el texto. Las algas le dan al coral la mayor parte de su alimento."},
+
+{s:"Inglés",t:"Verb tenses",q:"Choose the correct option: «By the time we arrived, the film ____ already ____.»",o:["has / started","had / started","was / starting","would / start"],a:1,
+ key:"Past perfect (had + participio): una acción que terminó antes que otra acción pasada. La película empezó antes de que llegáramos."},
+
+{s:"Inglés",t:"Conditionals",q:"Choose the correct option: «If she ____ more time, she would travel to Oaxaca.»",o:["has","will have","had","would have"],a:2,
+ key:"Segundo condicional: If + pasado simple, would + verbo. Habla de una situación hipotética en el presente."},
+
+{s:"Inglés",t:"Comparatives",q:"Choose the correct option: «This exam was ____ than the one we took last year.»",o:["more difficult","difficulter","most difficult","the more difficult"],a:0,
+ key:"Adjetivos de tres o más sílabas forman el comparativo con «more», no con «-er». «Difficulter» no existe."},
+
+{s:"Inglés",t:"Prepositions",q:"Choose the correct option: «She has been living in Mexico City ____ 2019.»",o:["for","since","during","from"],a:1,
+ key:"«Since» marca el punto de inicio (since 2019). «For» marca la duración (for five years). El error clásico es intercambiarlos."},
+
+{s:"Inglés",t:"Vocabulary in context",q:"Choose the option closest in meaning to the underlined word: «The evidence was overwhelming, so the jury reached a verdict quickly.»",o:["confusing","very strong","incomplete","expensive"],a:1,
+ key:"«Overwhelming» es abrumador, contundente. La pista está en el resto de la oración: por eso el jurado decidió rápido."},
+
+{s:"Inglés",t:"Connectors",q:"Choose the correct option: «The road was closed; ____, we had to take a longer route.»",o:["however","therefore","although","meanwhile"],a:1,
+ key:"«Therefore» introduce consecuencia. La segunda oración es el resultado de la primera, no un contraste."},
+
+{s:"Inglés",t:"Passive voice",q:"Choose the passive form of: «The government built the new hospital in 2020.»",o:["The new hospital was built by the government in 2020","The new hospital is built by the government in 2020","The new hospital has built by the government in 2020","The new hospital built by the government in 2020"],a:0,
+ key:"Pasiva en pasado simple: was/were + participio. El objeto pasa a sujeto y el sujeto original va con «by»."},
+
+/* ---------------- COMPETENCIA LECTORA · IPN ----------------
+   El IPN pide 20 reactivos de comprensión lectora. Se alimentan de los
+   reactivos de Español y Literatura que van encadenados a una lectura. */
+
+{s:"Español",t:"Comprensión lectora",lec:"cl1",q:"¿Cuál es la idea principal del texto?",o:["El maíz se domesticó en el valle de Tehuacán","La milpa es un sistema agrícola donde las plantas se benefician entre sí","El frijol aporta más proteína que el maíz","La agricultura industrial ha desplazado al campesino mexicano"],a:1,
+ key:"La idea principal es la que sostiene todo el texto. Aquí cada párrafo explica una pieza del mismo sistema: la milpa."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl1",q:"Según el texto, ¿qué función cumple el frijol dentro de la milpa?",o:["Da sombra a las demás plantas","Repone el nitrógeno que el maíz consume del suelo","Aleja a los insectos con su olor","Sostiene la mata de maíz cuando hay viento"],a:1,
+ key:"Reactivo de detalle: la respuesta está literal en el texto. El frijol fija nitrógeno y por eso el suelo no se agota."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl1",q:"¿Cuál es la intención predominante del autor?",o:["Narrar el origen mítico del maíz","Explicar por qué la milpa funciona como sistema","Convencer al lector de volverse agricultor","Describir el paisaje del campo mexicano"],a:1,
+ key:"La intención se reconoce por lo que el texto hace, no por su tema. Aquí explica un funcionamiento: causas, relaciones, consecuencias."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl1",q:"En el texto, la expresión «suelo agotado» significa:",o:["Terreno que ha perdido los nutrientes que necesitan las plantas","Terreno demasiado seco para sembrar","Terreno con exceso de piedras","Terreno abandonado por sus dueños"],a:0,
+ key:"Vocabulario en contexto: el propio texto da la pista al hablar de nitrógeno y nutrientes que se consumen."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl1",q:"¿Qué se puede inferir del último párrafo?",o:["El monocultivo es más productivo que la milpa en el largo plazo","El monocultivo obliga a compensar con insumos externos lo que la milpa resolvía sola","La milpa desapareció por completo del campo mexicano","Los fertilizantes químicos son inofensivos para el suelo"],a:1,
+ key:"Inferir es concluir lo que el texto sostiene sin decirlo con esas palabras. Si la milpa se autoabastecía y el monocultivo necesita fertilizante, la comparación es esa."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl1",q:"La relación entre el segundo y el tercer párrafo es de:",o:["Contraste entre dos posturas opuestas","Adición de otro elemento del mismo sistema","Causa y efecto invertidos","Ejemplificación de una regla general"],a:1,
+ key:"Cada párrafo suma una planta más al sistema: maíz, frijol, calabaza. No se contraponen, se acumulan."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl2",q:"¿Cuál es el tema central del texto?",o:["La biografía de los primeros cartógrafos","Cómo toda proyección cartográfica deforma algo del planeta","La superioridad del mapa de Peters sobre el de Mercator","El uso militar de los mapas en el siglo XVI"],a:1,
+ key:"El tema central es aquello de lo que el texto no deja de hablar. Aquí: no existe mapa plano sin distorsión."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl2",q:"Según el texto, la proyección de Mercator resultaba útil para:",o:["Comparar la superficie real de los países","Navegar, porque mantiene constantes los ángulos","Medir distancias exactas entre dos puertos","Representar el relieve de las montañas"],a:1,
+ key:"Detalle explícito: Mercator conserva los ángulos, y por eso servía para trazar rumbos de navegación."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl2",q:"¿Por qué el autor menciona el caso de Groenlandia y África?",o:["Para ilustrar con un ejemplo concreto la distorsión de superficie","Para demostrar que África es el continente más poblado","Para explicar el origen de los nombres geográficos","Para comparar sus climas"],a:0,
+ key:"Cuando un texto explicativo introduce un caso particular después de una afirmación general, casi siempre es para ejemplificarla."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl2",q:"En el texto, «fidedigno» puede sustituirse por:",o:["Antiguo","Confiable","Complicado","Decorativo"],a:1,
+ key:"Fidedigno viene de «fe» y «dar»: digno de confianza. El contexto habla de si un mapa merece crédito."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl2",q:"¿Qué postura sostiene el autor frente a las proyecciones cartográficas?",o:["Todas son igualmente inútiles","Ninguna es neutral: cada una decide qué conservar y qué sacrificar","Solo la proyección de Peters es honesta","Los mapas deberían dejar de usarse"],a:1,
+ key:"La postura del autor se reconstruye con lo que afirma a lo largo del texto, no con una sola frase. Aquí insiste en que toda proyección elige."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl2",q:"La afirmación «un mapa es siempre una decisión» funciona en el texto como:",o:["Una conclusión que sintetiza el argumento","Un dato estadístico","Una cita de autoridad","Una objeción que el autor refuta"],a:0,
+ key:"Aparece al cerrar y recoge lo dicho antes: esa es la función de una conclusión."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl3",q:"¿Cuál es el propósito principal del texto?",o:["Narrar la historia del alumbrado público","Advertir sobre los efectos de la contaminación lumínica","Promover el turismo astronómico","Explicar el funcionamiento de las lámparas LED"],a:1,
+ key:"El propósito se reconoce por lo que el texto busca lograr. Aquí enumera daños y cierra pidiendo cambios: advierte."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl3",q:"Según el texto, ¿qué efecto tiene la luz artificial nocturna sobre las aves migratorias?",o:["Les permite volar distancias más largas","Las desorienta porque se guían por las estrellas","Adelanta su temporada de reproducción","No les afecta de manera comprobada"],a:1,
+ key:"Detalle explícito. El texto liga la navegación por estrellas con la desorientación que provoca el resplandor de las ciudades."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl3",q:"En el texto, «resplandor» se refiere a:",o:["El brillo difuso que las ciudades proyectan sobre el cielo","Un fenómeno atmosférico natural","La luz de la luna llena","El reflejo del sol en las nubes"],a:0,
+ key:"Vocabulario en contexto: el texto habla del halo luminoso que se ve sobre las ciudades desde lejos."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl3",q:"¿Qué relación establece el texto entre el problema y su solución?",o:["El problema no tiene solución conocida","A diferencia de otras contaminaciones, esta desaparece en cuanto se apaga la fuente","La solución requiere décadas de recuperación","La única salida es abandonar las ciudades"],a:1,
+ key:"El texto contrasta esta contaminación con otras: aquí el efecto cesa al quitar la causa. Esa reversibilidad es el punto."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl3",q:"El texto sostiene su argumento principalmente mediante:",o:["Anécdotas personales del autor","Ejemplos de distintos seres vivos afectados","Citas de textos literarios","Comparaciones con otros países"],a:1,
+ key:"Fíjate en qué material usa el autor para convencer: aves, tortugas, insectos. Son ejemplos encadenados."},
+
+{s:"Español",t:"Comprensión lectora",lec:"cl3",q:"¿Cuál de estos enunciados NO se desprende del texto?",o:["La contaminación lumínica afecta a varias especies","Existen medidas técnicas para reducirla","La iluminación nocturna es indispensable para la seguridad vial","El cielo estrellado es hoy invisible para buena parte de la población"],a:2,
+ key:"En los reactivos con NO conviene marcar cuáles sí aparecen y quedarse con la sobrante. El texto nunca defiende la iluminación por seguridad vial."},
+
+/* ---------------- COMPETENCIA ESCRITA · IPN ---------------- */
+
+{s:"Español",t:"Redacción indirecta",q:"Selecciona la opción que corrige el error de la oración: «Hubieron muchos aspirantes que llegaron tarde al examen.»",o:["Hubieron muchos aspirantes que llegaron tarde al examen","Hubo muchos aspirantes que llegaron tarde al examen","Habían muchos aspirantes que llegaron tarde al examen","Hubieran muchos aspirantes que llegaron tarde al examen"],a:1,
+ key:"«Haber» como impersonal no tiene plural: hubo un aspirante, hubo muchos aspirantes. Lo que va en plural es el complemento, no el verbo."},
+
+{s:"Español",t:"Concordancia verbal",q:"Selecciona la opción escrita correctamente:",o:["La mayoría de los estudiantes entregaron su trabajo a tiempo","La mayoría de los estudiantes entregó sus trabajo a tiempo","La mayoría de los estudiantes entregaron sus trabajo a tiempo","La mayoría de los estudiante entregó su trabajo a tiempo"],a:0,
+ key:"Con «la mayoría de + plural» la Academia admite verbo en singular o en plural. Lo que sí falla en las otras opciones es «sus trabajo» y «los estudiante»."}
 
 ];
 
 /* ===================== LECTURAS (preguntas encadenadas) ===================== */
 const LECTURAS = {
+cl1:{
+  titulo:"La milpa",
+  fuente:"Texto de divulgación · 6 reactivos",
+  texto:"En el campo mexicano, la milpa no es un cultivo sino un sistema. En un mismo terreno conviven el maíz, el frijol y la calabaza, sembrados en el mismo momento y en la misma superficie, y cada uno resuelve un problema que los otros no podrían resolver solos.\n\nEl maíz crece alto y recto, y su tallo funciona como tutor: el frijol trepa por él sin necesidad de varas ni estructuras. Esa es la parte visible del acuerdo. La invisible ocurre bajo tierra, donde el frijol aloja en sus raíces bacterias capaces de fijar el nitrógeno del aire y devolverlo al suelo. El maíz es un consumidor voraz de ese mismo nitrógeno, de modo que lo que una planta gasta la otra lo repone, y el suelo no queda agotado al final del ciclo.\n\nLa calabaza aporta la tercera pieza. Sus hojas anchas se extienden a ras de tierra y cubren la superficie: retienen la humedad, bajan la temperatura del suelo y ahogan a las hierbas que competirían por el agua. Ninguna de las tres plantas fue elegida por casualidad, y el arreglo tomó siglos de ensayo.\n\nEl monocultivo moderno invirtió esa lógica. Al sembrar una sola especie en grandes extensiones, cada función que la milpa resolvía internamente debe comprarse fuera: fertilizante para el nitrógeno, herbicida para las hierbas, riego para la humedad que las hojas ya no retienen. La cosecha por hectárea puede ser mayor, pero el costo de sostenerla dejó de estar dentro de la parcela."
+},
+cl2:{
+  titulo:"Todo mapa miente",
+  fuente:"Texto argumentativo · 6 reactivos",
+  texto:"Ningún mapa plano puede representar la Tierra sin deformarla. La razón es geométrica y no tiene remedio: una esfera no se despliega sobre una hoja sin estirarse en algún punto o romperse en otro. Toda proyección cartográfica es, entonces, una manera de repartir ese error.\n\nLa proyección de Mercator, trazada en 1569, decidió conservar los ángulos. Un rumbo constante aparece en ella como una línea recta, y eso la volvió insustituible para la navegación: bastaba con unir dos puertos con una regla para saber qué dirección sostener. El precio fue la superficie. Mientras más lejos del ecuador, más se estiran los territorios.\n\nDe ahí el caso que suele citarse: en un mapa de Mercator, Groenlandia parece del tamaño de África. En realidad África es catorce veces más extensa. Durante siglos, generaciones enteras aprendieron geografía sobre una imagen que agrandaba el norte y encogía el trópico.\n\nOtras proyecciones invirtieron la decisión. La de Peters conserva las superficies proporcionales, pero deforma las formas: los continentes aparecen alargados y extraños. No es un mapa más fidedigno que el de Mercator, sino uno que eligió sacrificar algo distinto.\n\nPor eso conviene desconfiar de la pregunta por el mapa correcto. La pregunta útil es otra: qué conserva esta proyección, qué sacrifica y para qué fue hecha. Un mapa es siempre una decisión."
+},
+cl3:{
+  titulo:"La noche que perdimos",
+  fuente:"Texto de divulgación · 6 reactivos",
+  texto:"Cerca de un tercio de la humanidad no puede ver la Vía Láctea desde donde vive. No porque haya desaparecido, sino porque el resplandor de las ciudades —ese halo luminoso que se levanta sobre el horizonte y se distingue a kilómetros de distancia— borra del cielo todo lo que no sea muy brillante. A ese fenómeno se le llama contaminación lumínica.\n\nSus efectos no se limitan a la astronomía. Muchas aves migratorias navegan de noche orientándose por las estrellas, y al cruzar una ciudad iluminada pierden el rumbo: giran en torno a las luces hasta agotarse o chocan contra los edificios. Las crías de tortuga marina, que al nacer buscan instintivamente la franja más luminosa del horizonte para llegar al mar, caminan hacia la carretera cuando la costa está alumbrada. Los insectos nocturnos, atraídos por las lámparas, mueren por millones alrededor de ellas y dejan de polinizar las plantas que dependían de su trabajo.\n\nEn los seres humanos, la luz nocturna interrumpe la producción de melatonina, la hormona que regula el sueño, y hay estudios que asocian esa interrupción con trastornos del descanso.\n\nHay, sin embargo, una diferencia notable con otras formas de contaminación. Un río contaminado tarda años en limpiarse; el plástico en el mar, siglos. La contaminación lumínica, en cambio, desaparece en el instante en que se apaga la fuente. Bastan lámparas que apunten hacia abajo en lugar de dispersar la luz en todas direcciones, luz cálida en lugar de blanca, y apagado programado en las horas sin tránsito. La noche puede recuperarse, y a diferencia de casi todo lo demás, puede recuperarse esta misma noche."
+},
 esp1:{
   titulo:"El suelo que se hunde",
   fuente:"Texto expositivo · 4 reactivos",
@@ -1365,29 +1498,55 @@ lit1:{
 };
 
 /* ===================== MODELOS DE EXAMEN =====================
-   Distribución de reactivos por área. La UNAM no publica esta tabla como
-   dato oficial: son las cifras que circulan en las guías comerciales y
-   coinciden entre sí. El total siempre es 120 en 3 horas.
+   Dos instituciones, dos exámenes distintos.
+
+   UNAM: 120 reactivos en 3 horas, una sección por materia. La UNAM no
+   publica la tabla de distribución como dato oficial: son las cifras
+   que circulan en las guías comerciales y coinciden entre sí.
+
+   IPN: 140 reactivos en 3 horas. Sus secciones no coinciden con las
+   materias del banco — Historia junta Universal y de México, y Español
+   se parte en Competencia Escrita (gramática y ortografía) y
+   Competencia Lectora (los reactivos encadenados a una lectura). Los
+   10 de Inglés son diagnósticos: aparecen en el examen pero no suman
+   a tu puntaje de admisión.
 ============================================================== */
 const PERFILES = {
-  "1":{nombre:"Área 1 · Físico-Matemáticas e Ingenierías",
+  "u1":{inst:"UNAM", corto:"Área 1", nombre:"Área 1 · Físico-Matemáticas e Ingenierías",
        pesos:{"Español":18,"Matemáticas":26,"Física":16,"Química":10,"Biología":10,"Historia Universal":10,"Historia de México":10,"Literatura":10,"Geografía":10}},
-  "2":{nombre:"Área 2 · Biológicas, Químicas y de la Salud",
+  "u2":{inst:"UNAM", corto:"Área 2", nombre:"Área 2 · Biológicas, Químicas y de la Salud",
        pesos:{"Español":18,"Matemáticas":24,"Física":12,"Química":13,"Biología":13,"Historia Universal":10,"Historia de México":10,"Literatura":10,"Geografía":10}},
-  "3":{nombre:"Área 3 · Ciencias Sociales",
+  "u3":{inst:"UNAM", corto:"Área 3", nombre:"Área 3 · Ciencias Sociales",
        pesos:{"Español":18,"Matemáticas":24,"Física":10,"Química":10,"Biología":10,"Historia Universal":14,"Historia de México":14,"Literatura":10,"Geografía":10}},
-  "4":{nombre:"Área 4 · Humanidades y Artes",
-       pesos:{"Español":18,"Matemáticas":22,"Física":10,"Química":10,"Biología":10,"Historia Universal":10,"Historia de México":10,"Literatura":10,"Geografía":10,"Filosofía":10}}
+  "u4":{inst:"UNAM", corto:"Área 4", nombre:"Área 4 · Humanidades y Artes",
+       pesos:{"Español":18,"Matemáticas":22,"Física":10,"Química":10,"Biología":10,"Historia Universal":10,"Historia de México":10,"Literatura":10,"Geografía":10,"Filosofía":10}},
+  "iICFM":{inst:"IPN", corto:"IyCFM", nombre:"IyCFM · Ingeniería y Ciencias Físico Matemáticas",
+       pesos:{"Matemáticas":37,"Competencia Escrita":20,"Competencia Lectora":20,"Inglés":10,"Historia":10,"Biología":9,"Química":17,"Física":17}},
+  "iCMB":{inst:"IPN", corto:"CMB", nombre:"CMB · Ciencias Médico Biológicas",
+       pesos:{"Matemáticas":33,"Competencia Escrita":20,"Competencia Lectora":20,"Inglés":10,"Historia":10,"Biología":17,"Química":17,"Física":13}},
+  "iCSA":{inst:"IPN", corto:"CSA", nombre:"CSA · Ciencias Sociales y Administrativas",
+       pesos:{"Matemáticas":35,"Competencia Escrita":25,"Competencia Lectora":20,"Inglés":10,"Historia":20,"Biología":10,"Química":10,"Física":10}}
 };
-const ORDEN = ["Español","Matemáticas","Física","Química","Biología","Historia Universal","Historia de México","Literatura","Geografía","Filosofía","Razonamiento"];
+
+/* Secciones del IPN que se arman con más de una materia del banco.
+   Lo que no aparece aquí se busca por nombre de materia tal cual. */
+const MEZCLAS = {
+  "Competencia Escrita": q => q.s === "Español" && !q.lec,
+  "Competencia Lectora": q => !!q.lec && (q.s === "Español" || q.s === "Literatura"),
+  "Historia":            q => q.s === "Historia Universal" || q.s === "Historia de México"
+};
+const filtroDe = nom => MEZCLAS[nom] || (q => q.s === nom);
+
+const ORDEN = ["Español","Matemáticas","Física","Química","Biología","Historia Universal","Historia de México","Literatura","Geografía","Filosofía","Inglés","Razonamiento"];
 const MINUTOS = 180;
 const LETRAS = "ABCDE";
 const VERSIONES = ["1","2","3","4","5","Libre"];
+const INSTITUCIONES = ["UNAM","IPN"];
 
 /* ===================== ESTADO ===================== */
 const MATERIAS = ORDEN.filter(m => BANK.some(q => q.s === m));
 const LARGOS = [10,20,40,60,"Todas"];
-let modo = "practica", area = "3", version = "Libre";
+let modo = "practica", inst = "UNAM", area = "u3", version = "Libre";
 let barajar = true, conReto = false;
 let sel = new Set(MATERIAS), largo = 20;
 let pool = [], idx = 0, answered = false, hits = 0, errores = [], startedAt = 0;
@@ -1463,9 +1622,72 @@ function mulberry32(a){
   };
 }
 function sembrar(){
-  rnd = (version === "Libre") ? Math.random : mulberry32(Number(version)*7919 + Number(area)*131 + 17);
+  rnd = (version === "Libre") ? Math.random
+      : mulberry32(parseInt(idDe(version + "·" + area), 36));
 }
 const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=(rnd()*(i+1))|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
+
+/* ===================== REACTIVOS YA VISTOS =====================
+   Recuerda qué reactivos ya te tocaron para mandarlos hasta el final
+   de la fila en el siguiente examen. Esto NO es guardado de progreso:
+   si interrumpes un examen sigues empezando de cero. Son dos cosas
+   distintas a propósito — una evita que memorices, la otra sostiene
+   el reto de las tres horas.
+
+   Las versiones numeradas 1-5 ignoran esta memoria: su promesa es
+   armar siempre el mismo examen, y respetarla es más importante.
+============================================================== */
+const CLAVE_VISTOS = "simulador-unam:vistos";
+
+/* id estable derivado del reactivo (FNV-1a). Incluye la lectura y la
+   materia porque dos lecturas distintas pueden preguntar exactamente
+   lo mismo («¿Cuál es la idea principal del texto?») y no son el mismo
+   reactivo. */
+function idDe(texto){
+  let h = 2166136261;
+  for(let i = 0; i < texto.length; i++){ h ^= texto.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return (h >>> 0).toString(36);
+}
+BANK.forEach(q => { q.id = idDe((q.lec || "") + "|" + q.s + "|" + q.q); });
+
+let noRepetir = true;
+let vistos = {};
+
+let memoriaPersiste = true;
+try{ vistos = JSON.parse(localStorage.getItem(CLAVE_VISTOS)) || {}; }
+catch(e){ vistos = {}; memoriaPersiste = false; }
+
+function guardarVistos(){
+  try{ localStorage.setItem(CLAVE_VISTOS, JSON.stringify(vistos)); }
+  catch(e){ memoriaPersiste = false; /* navegación privada o sin espacio: la cuenta dura la sesión */ }
+}
+const vecesVisto = q => vistos[q.id] || 0;
+const memoriaActiva = () => noRepetir && !(modo === "simulacro" && version !== "Libre");
+
+function marcarVistos(lista){
+  if(!noRepetir) return;
+  lista.forEach(q => { if(q.id) vistos[q.id] = vecesVisto(q) + 1; });
+  guardarVistos();
+}
+function olvidarVistos(){ vistos = {}; guardarVistos(); paintCover(); }
+
+/* Cuántos reactivos de una sección siguen sin salir nunca */
+const frescos = seccion => fuente().filter(q => filtroDe(seccion)(q) && !vecesVisto(q)).length;
+
+/* Ordena los bloques poniendo primero los que menos veces han salido.
+   Dentro de cada nivel el orden sigue siendo azaroso, así que dos
+   exámenes seguidos no traen los mismos reactivos en el mismo lugar. */
+function porFrescura(gs){
+  if(!memoriaActiva()) return shuffle(gs);
+  const niveles = new Map();
+  gs.forEach(g => {
+    const k = Math.min(...g.map(vecesVisto));
+    if(!niveles.has(k)) niveles.set(k, []);
+    niveles.get(k).push(g);
+  });
+  return [...niveles.keys()].sort((a,b) => a-b)
+    .reduce((acc,k) => acc.concat(shuffle(niveles.get(k))), []);
+}
 
 const pesos = () => PERFILES[area].pesos;
 const totalExamen = () => Object.values(pesos()).reduce((a,b)=>a+b,0);
@@ -1482,6 +1704,30 @@ function chip(padre, texto, activo, alClic){
   return b;
 }
 
+function pintarMemoria(){
+  const caja = $("memoria");
+  const banco = fuente(), total = banco.length;
+  const ya = banco.filter(q => vecesVisto(q)).length;
+
+  if(!noRepetir){
+    caja.textContent = "Cada examen se arma al azar del banco completo, sin tomar en cuenta lo que ya te tocó.";
+    return;
+  }
+  let texto;
+  if(ya === 0) texto = "Todavía no te toca ningún reactivo: el banco está entero.";
+  else if(ya >= total) texto = "Ya te tocaron los " + total + " reactivos del banco. De aquí en adelante salen primero los que menos veces han caído.";
+  else texto = "Ya te tocaron " + ya + " de " + total + " reactivos. Los otros " + (total - ya) + " salen primero.";
+  if(!memoriaPersiste) texto += " Este navegador no guarda la cuenta al cerrar.";
+
+  caja.textContent = texto + " ";
+  if(ya > 0){
+    const b = document.createElement("button");
+    b.className = "liga"; b.type = "button"; b.textContent = "Empezar la cuenta de cero";
+    b.onclick = olvidarVistos;
+    caja.appendChild(b);
+  }
+}
+
 function paintCover(){
   $("modos").innerHTML = "";
   [["practica","Práctica"],["simulacro","Simulacro completo"],["reto","Reto CONAMAT"]].forEach(([k,txt])=>
@@ -1492,29 +1738,48 @@ function paintCover(){
   $("opcSim").classList.toggle("hidden", !sim);
   $("opcReto").classList.toggle("hidden", !reto);
   $("opcAjustes").classList.toggle("hidden", reto);
-  $("start").textContent = sim ? "Iniciar simulacro · 3 horas"
+  $("start").textContent = sim ? "Iniciar simulacro " + inst + " · 3 horas"
     : reto ? "Empezar reto · " + RETOS.length + " problemas" : "Empezar";
   $("start").disabled = false;
 
   $("ajustes").innerHTML = "";
+  chip("ajustes", "No repetir reactivos", noRepetir, ()=>{ noRepetir = !noRepetir; paintCover(); });
   chip("ajustes", "Barajar opciones", barajar, ()=>{ barajar = !barajar; paintCover(); });
   chip("ajustes", "Incluir reactivos de reto", conReto, ()=>{ conReto = !conReto; paintCover(); });
+  pintarMemoria();
 
   if(reto) return;
 
   if(sim){
+    $("instituciones").innerHTML = "";
+    INSTITUCIONES.forEach(i =>
+      chip("instituciones", i, inst === i, ()=>{
+        inst = i;
+        /* al cambiar de institución, cae al primer perfil de esa casa */
+        if(PERFILES[area].inst !== inst) area = Object.keys(PERFILES).find(k => PERFILES[k].inst === inst);
+        paintCover();
+      }));
+
     $("areas").innerHTML = "";
-    Object.keys(PERFILES).forEach(k =>
-      chip("areas", "Área " + k, area === k, ()=>{ area = k; paintCover(); }));
+    Object.keys(PERFILES).filter(k => PERFILES[k].inst === inst).forEach(k =>
+      chip("areas", PERFILES[k].corto, area === k, ()=>{ area = k; paintCover(); }));
+
     $("versiones").innerHTML = "";
     VERSIONES.forEach(v =>
       chip("versiones", v === "Libre" ? "Libre" : "Versión " + v, version === v, ()=>{ version = v; paintCover(); }));
+
     $("perfilNom").textContent = PERFILES[area].nombre;
-    $("tablaPesos").innerHTML = ORDEN.filter(m => pesos()[m]).map(m=>{
-      const hay = fuente().filter(q=>q.s===m).length, falta = hay < pesos()[m];
-      return '<div class="row"><span class="nm">'+esc(m)+'</span><span class="pc">'+pesos()[m]+
-             (falta ? ' <i class="warn">solo hay '+hay+'</i>' : '')+'</span></div>';
+    $("tablaPesos").innerHTML = Object.keys(pesos()).map(s=>{
+      const n = pesos()[s], hay = fuente().filter(filtroDe(s)).length, fr = frescos(s);
+      let nota = "";
+      if(hay < n) nota = ' <i class="warn">solo hay '+hay+'</i>';
+      else if(memoriaActiva() && fr < n) nota = ' <i class="aviso">'+(n-fr)+' ya vistos</i>';
+      return '<div class="row"><span class="nm">'+esc(s)+'</span><span class="pc">'+n+
+             nota+'</span></div>';
     }).join("") + '<div class="row tot"><span class="nm">Total</span><span class="pc">'+totalExamen()+'</span></div>';
+    $("notaSim").textContent = inst === "UNAM"
+      ? "120 reactivos en 3 horas, agrupados por materia y sin retroalimentación hasta el final."
+      : "140 reactivos en 3 horas. Los 10 de Inglés aparecen en el examen real pero no suman a tu puntaje de admisión; aquí se cuentan aparte al final.";
     return;
   }
 
@@ -1544,17 +1809,24 @@ function bloques(lista){
   return out;
 }
 
-function tomar(materia, n){
-  const gs = shuffle(bloques(fuente().filter(q=>q.s===materia)));
+function tomar(seccion, n){
+  const f = filtroDe(seccion);
+  const gs = porFrescura(bloques(fuente().filter(f)));
   const out = [];
   for(const g of gs){
     if(out.length + g.length <= n) out.push(...g);
     if(out.length === n) break;
   }
+  /* Si sobró cupo, rellena con lo que quedó fuera. Una lectura puede
+     entrar parcial: sus preguntas siguen juntas y en orden, solo van
+     menos. Es preferible a dejar el examen corto. */
   if(out.length < n){
-    for(const q of shuffle(fuente().filter(q=>q.s===materia && !q.lec))){
+    for(const g of gs){
+      for(const q of g){
+        if(out.length === n) break;
+        if(!out.includes(q)) out.push(q);
+      }
       if(out.length === n) break;
-      if(!out.includes(q)) out.push(q);
     }
   }
   return out;
@@ -1563,14 +1835,16 @@ function tomar(materia, n){
 function armarSimulacro(){
   sembrar();
   const out = [];
-  ORDEN.forEach(m => { if(pesos()[m]) out.push(...tomar(m, pesos()[m])); });
+  /* El orden de las secciones lo marca el perfil, no el banco: el IPN
+     agrupa distinto que la UNAM. */
+  Object.keys(pesos()).forEach(s => out.push(...tomar(s, pesos()[s])));
   return out;
 }
 
 function armarPractica(){
   rnd = Math.random;
   const plano = [];
-  shuffle(bloques(fuente().filter(q=>sel.has(q.s)))).forEach(g => plano.push(...g));
+  porFrescura(bloques(fuente().filter(q=>sel.has(q.s)))).forEach(g => plano.push(...g));
   return largo === "Todas" ? plano : plano.slice(0, Math.min(largo, plano.length));
 }
 
@@ -1583,6 +1857,7 @@ function revolver(q){
 
 /* ===================== EXAMEN ===================== */
 function start(list){
+  if(modo !== "reto") marcarVistos(list);
   pool = barajar ? list.map(revolver) : list.slice();
   idx = 0; hits = 0; errores = []; answered = false;
   resp = new Array(pool.length).fill(null); marcas = new Set();
