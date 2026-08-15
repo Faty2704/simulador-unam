@@ -1510,6 +1510,15 @@ lit1:{
    Competencia Lectora (los reactivos encadenados a una lectura). Los
    10 de Inglés son diagnósticos: aparecen en el examen pero no suman
    a tu puntaje de admisión.
+
+   Mixto: 130 reactivos en 3 horas. No es un examen que exista en
+   ninguna parte — es un entrenamiento para quien va a presentar los
+   dos. Cada sección pesa el promedio de lo que le piden los dos
+   exámenes, sobre la partición más fina de ambos: Historia se parte en
+   dos como en la UNAM, y Español se parte en dos como en el IPN, de
+   modo que ninguna sección se solape con otra. Entra todo lo que
+   cualquiera de las dos casas evalúa, incluidos Inglés, Literatura,
+   Geografía y cálculo.
 ============================================================== */
 const PERFILES = {
   "u1":{inst:"UNAM", corto:"Área 1", nombre:"Área 1 · Físico-Matemáticas e Ingenierías",
@@ -1525,7 +1534,13 @@ const PERFILES = {
   "iCMB":{inst:"IPN", corto:"CMB", nombre:"CMB · Ciencias Médico Biológicas",
        pesos:{"Matemáticas":33,"Competencia Escrita":20,"Competencia Lectora":20,"Inglés":10,"Historia":10,"Biología":17,"Química":17,"Física":13}},
   "iCSA":{inst:"IPN", corto:"CSA", nombre:"CSA · Ciencias Sociales y Administrativas",
-       pesos:{"Matemáticas":35,"Competencia Escrita":25,"Competencia Lectora":20,"Inglés":10,"Historia":20,"Biología":10,"Química":10,"Física":10}}
+       pesos:{"Matemáticas":35,"Competencia Escrita":25,"Competencia Lectora":20,"Inglés":10,"Historia":20,"Biología":10,"Química":10,"Física":10}},
+  "m1":{inst:"Mixto", corto:"Área 1 + IyCFM", nombre:"Mixto · Físico-Matemáticas (UNAM Área 1 + IPN IyCFM)",
+       pesos:{"Matemáticas":32,"Competencia Escrita":16,"Competencia Lectora":13,"Historia Universal":8,"Historia de México":8,"Literatura":5,"Geografía":5,"Biología":9,"Química":13,"Física":16,"Inglés":5}},
+  "m2":{inst:"Mixto", corto:"Área 2 + CMB", nombre:"Mixto · Biológicas y Salud (UNAM Área 2 + IPN CMB)",
+       pesos:{"Matemáticas":29,"Competencia Escrita":16,"Competencia Lectora":13,"Historia Universal":8,"Historia de México":7,"Literatura":5,"Geografía":5,"Biología":15,"Química":15,"Física":12,"Inglés":5}},
+  "m3":{inst:"Mixto", corto:"Área 3 + CSA", nombre:"Mixto · Ciencias Sociales (UNAM Área 3 + IPN CSA)",
+       pesos:{"Matemáticas":30,"Competencia Escrita":18,"Competencia Lectora":13,"Historia Universal":12,"Historia de México":12,"Literatura":5,"Geografía":5,"Biología":10,"Química":10,"Física":10,"Inglés":5}}
 };
 
 /* Secciones del IPN que se arman con más de una materia del banco.
@@ -1541,7 +1556,455 @@ const ORDEN = ["Español","Matemáticas","Física","Química","Biología","Histo
 const MINUTOS = 180;
 const LETRAS = "ABCDE";
 const VERSIONES = ["1","2","3","4","5","Libre"];
-const INSTITUCIONES = ["UNAM","IPN"];
+const INSTITUCIONES = ["UNAM","IPN","Mixto"];
+
+
+/* ===================== GENERADORES =====================
+   Un generador no es un reactivo: es una plantilla que produce
+   reactivos distintos cada vez, con números nuevos y el desarrollo
+   calculado solo. Sirve para lo operativo — matemáticas, física con
+   fórmula, estequiometría — donde lo que se practica es el
+   procedimiento, no el dato.
+
+   Usan el mismo rnd() sembrado que el resto del examen, así que una
+   versión numerada sigue produciendo exactamente los mismos números.
+
+   Lo conceptual (Historia, Literatura, Geografía, Biología descriptiva)
+   no se puede generar: ahí no hay parámetros que variar, hay que
+   escribir cada reactivo. Eso sigue creciendo a mano.
+====================================================== */
+
+const ri = (a,b) => a + ((rnd()*(b-a+1))|0);
+const elige = arr => arr[(rnd()*arr.length)|0];
+const nz = (a,b) => { let v = 0; while(v === 0) v = ri(a,b); return v; };
+const mcd = (a,b) => { a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a || 1; };
+const sg  = n => (n < 0 ? " − " + Math.abs(n) : " + " + n);
+const sgx = n => (n < 0 ? "−" + Math.abs(n) : "+" + n);
+const frac = (n,d) => { if(d<0){ n=-n; d=-d; } const g=mcd(n,d); n/=g; d/=g; return d===1 ? String(n) : n+"/"+d; };
+const coef = a => a === 1 ? "" : a === -1 ? "−" : String(a);
+
+/* Ternas pitagóricas, para que raíces y distancias den exacto */
+const TERNAS = [[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15],[7,24,25],[20,21,29],[9,40,41]];
+/* (a, b, c) con a² = b² + c², para elipses e hipérbolas */
+const ELIPSES = [[5,3,4],[13,5,12],[10,6,8],[25,7,24],[17,8,15],[15,9,12],
+                 [29,21,20],[25,15,20],[26,10,24],[41,9,40],[20,12,16],[34,16,30]];
+
+/* Arma el reactivo: mete la correcta y los distractores, descarta
+   duplicados y baraja la posición. Si los distractores colisionaron y
+   quedan menos de cuatro opciones, devuelve null y se intenta otro. */
+function reactivo(o){
+  const vistas = [String(o.ok)];
+  for(const m of o.malos){
+    const s = String(m);
+    if(!vistas.includes(s)) vistas.push(s);
+    if(vistas.length === 4) break;
+  }
+  if(vistas.length < 4) return null;
+  const ix = shuffle(vistas.map((_,i)=>i));
+  return { s: o.s || "Matemáticas", t: o.t, gen: true, solo: o.solo,
+           q: o.q, o: ix.map(i=>vistas[i]), a: ix.indexOf(0),
+           mono: o.mono !== false, key: o.key, dev: o.dev };
+}
+
+const GEN = [
+
+{t:"Ecuaciones de primer grado", hacer(){
+  const x = nz(-9,12), a = ri(3,9), c = ri(1,a-1), b = nz(-15,15);
+  const d = (a-c)*x + b;
+  return reactivo({t:"Ecuaciones de primer grado",
+    q:`Resuelve ${a}x${sg(b)} = ${c}x${sg(d)}`,
+    ok:`x = ${x}`, malos:[`x = ${x+1}`,`x = ${-x}`,`x = ${x-2}`,`x = ${x+3}`],
+    key:"Todo lo que tiene x de un lado, los números del otro.",
+    dev:[`${a}x${sg(b)} = ${c}x${sg(d)}`,
+         `${a}x − ${c}x = ${d} − (${b})`,
+         `${a-c}x = ${d-b}`,
+         `x = ${d-b}/${a-c} = ${x}`,
+         `Comprobación: ${a}(${x})${sg(b)} = ${a*x+b} y ${c}(${x})${sg(d)} = ${c*x+d} ✓`]});
+}},
+
+{t:"Sistemas de ecuaciones", hacer(){
+  const x = nz(-6,8), y = nz(-6,8);
+  const a1 = nz(1,5), b1 = nz(1,5), a2 = nz(1,5), b2 = nz(1,5);
+  if(a1*b2 - a2*b1 === 0) return null;
+  const c1 = a1*x + b1*y, c2 = a2*x + b2*y;
+  return reactivo({t:"Sistemas de ecuaciones",
+    q:`Resuelve el sistema ${a1}x ${sgx(b1)}y = ${c1} ; ${a2}x ${sgx(b2)}y = ${c2}`,
+    ok:`x = ${x}, y = ${y}`,
+    malos:[`x = ${y}, y = ${x}`,`x = ${x+1}, y = ${y-1}`,`x = ${-x}, y = ${y}`,`x = ${x}, y = ${y+2}`],
+    key:"Por reducción: multiplica una ecuación para que un coeficiente se cancele al sumar.",
+    dev:[`Multiplica la primera por ${a2} y la segunda por ${a1}:`,
+         `${a1*a2}x ${sgx(b1*a2)}y = ${c1*a2}`,
+         `${a1*a2}x ${sgx(b2*a1)}y = ${c2*a1}`,
+         `Resta: ${b1*a2 - b2*a1}y = ${c1*a2 - c2*a1}`,
+         `y = ${y}`,
+         `Sustituye en la primera: ${a1}x ${sgx(b1)}(${y}) = ${c1} → x = ${x}`]});
+}},
+
+{t:"Ecuaciones de segundo grado", hacer(){
+  const r1 = nz(-8,8), r2 = nz(-8,8);
+  if(r1 === r2) return null;
+  const b = -(r1+r2), c = r1*r2;
+  return reactivo({t:"Ecuaciones de segundo grado",
+    q:`Las raíces de x²${sg(b)}x${sg(c)} = 0 son:`,
+    ok:`${r1} y ${r2}`, malos:[`${-r1} y ${-r2}`,`${r1} y ${-r2}`,`${r1+1} y ${r2-1}`,`${r1*2} y ${r2}`],
+    key:"Busca dos números que sumados den " + (-b) + " y multiplicados den " + c + ".",
+    dev:[`x²${sg(b)}x${sg(c)} = 0`,
+         `Factoriza: (x${sgx(-r1)})(x${sgx(-r2)}) = 0`,
+         `x = ${r1} o x = ${r2}`,
+         `Verifica con la suma: ${r1} + ${r2} = ${r1+r2} = −(${b}) ✓`]});
+}},
+
+{t:"Productos notables", hacer(){
+  const a = ri(2,7), b = nz(-9,9);
+  return reactivo({t:"Productos notables",
+    q:`Desarrolla (${coef(a)}x${sgx(b)})²`,
+    ok:`${a*a}x²${sg(2*a*b)}x${sg(b*b)}`,
+    malos:[`${a*a}x²${sg(b*b)}`,`${a*a}x²${sg(a*b)}x${sg(b*b)}`,`${a}x²${sg(2*a*b)}x${sg(b*b)}`,`${a*a}x²${sg(2*a*b)}x${sg(-b*b)}`],
+    key:"Binomio al cuadrado: primero al cuadrado, más el doble producto, más el segundo al cuadrado. El doble producto es lo que se olvida.",
+    dev:[`(${coef(a)}x${sgx(b)})² = (${coef(a)}x)² + 2(${coef(a)}x)(${b}) + (${b})²`,
+         `= ${a*a}x²${sg(2*a*b)}x${sg(b*b)}`]});
+}},
+
+{t:"Factorización", hacer(){
+  const a = ri(2,9), b = ri(2,9);
+  return reactivo({t:"Factorización",
+    q:`Factoriza ${a*a}x² − ${b*b}`,
+    ok:`(${coef(a)}x + ${b})(${coef(a)}x − ${b})`,
+    malos:[`(${coef(a)}x − ${b})²`,`(${coef(a)}x + ${b})²`,`(${coef(a*a)}x + ${b*b})(x − 1)`,`(${coef(a)}x + ${b*b})(${coef(a)}x − 1)`],
+    key:"Diferencia de cuadrados: a² − b² = (a+b)(a−b). Suma por diferencia, nunca un cuadrado.",
+    dev:[`${a*a}x² − ${b*b} = (${coef(a)}x)² − (${b})²`,
+         `= (${coef(a)}x + ${b})(${coef(a)}x − ${b})`]});
+}},
+
+{t:"Fracciones algebraicas", hacer(){
+  const a = nz(-9,9), b = nz(-9,9);
+  if(a === b || a === -b) return null;
+  return reactivo({t:"Fracciones algebraicas",
+    q:`Simplifica (x²${sg(-(a+b))}x${sg(a*b)}) / (x${sgx(-a)}), con x ≠ ${a}`,
+    ok:`x${sgx(-b)}`, malos:[`x${sgx(b)}`,`x${sgx(-a)}`,`x²${sgx(-b)}`,`x${sgx(-a-b)}`],
+    key:"Factoriza el numerador y cancela el factor que se repite.",
+    dev:[`x²${sg(-(a+b))}x${sg(a*b)} = (x${sgx(-a)})(x${sgx(-b)})`,
+         `Cancela (x${sgx(-a)}) arriba y abajo`,
+         `Queda x${sgx(-b)}`]});
+}},
+
+{t:"Leyes de los exponentes", hacer(){
+  const a = ri(2,6), m = ri(3,8), n = ri(2,m-1);
+  return reactivo({t:"Leyes de los exponentes",
+    q:`Simplifica (${a}x^${m} · ${a}x^${n}) / (${a}x^${n})`,
+    ok:`${a}x^${m}`, malos:[`${a}x^${m+n}`,`${a*a}x^${m}`,`${a}x^${m-n}`,`x^${m}`],
+    key:"Al multiplicar potencias de la misma base se suman los exponentes; al dividir se restan.",
+    dev:[`Arriba: ${a}·${a} = ${a*a} y x^${m}·x^${n} = x^${m+n}`,
+         `(${a*a}x^${m+n}) / (${a}x^${n})`,
+         `Coeficientes: ${a*a}/${a} = ${a}`,
+         `Exponentes: ${m+n} − ${n} = ${m}`,
+         `= ${a}x^${m}`]});
+}},
+
+{t:"Radicales", hacer(){
+  const n = elige([2,3,5,6,7]), k = ri(2,6), m = ri(2,6);
+  if(k === m) return null;
+  return reactivo({t:"Radicales",
+    q:`Simplifica √${k*k*n} + √${m*m*n}`,
+    ok:`${k+m}√${n}`, malos:[`√${(k*k+m*m)*n}`,`${k*m}√${n}`,`${k+m}√${2*n}`,`${k*k+m*m}√${n}`],
+    key:"Saca los cuadrados perfectos de cada raíz; solo se suman los radicales que quedan iguales.",
+    dev:[`√${k*k*n} = ${k}√${n}`,
+         `√${m*m*n} = ${m}√${n}`,
+         `${k}√${n} + ${m}√${n} = ${k+m}√${n}`,
+         `Ojo: las raíces no se suman por dentro.`]});
+}},
+
+{t:"Desigualdades", hacer(){
+  const a = ri(2,7), b = nz(-12,12), c = nz(-12,12);
+  const lim = frac(c-b, -a);
+  return reactivo({t:"Desigualdades",
+    q:`Resuelve −${a}x${sg(b)} < ${c}`,
+    ok:`x > ${lim}`, malos:[`x < ${lim}`,`x > ${frac(c-b,a)}`,`x < ${frac(c-b,a)}`,`x ≥ ${lim}`],
+    key:"Al dividir entre un número negativo, el sentido de la desigualdad se invierte. Ese es el error de siempre.",
+    dev:[`−${a}x${sg(b)} < ${c}`,
+         `−${a}x < ${c} − (${b}) = ${c-b}`,
+         `Divide entre −${a} e invierte el signo:`,
+         `x > ${lim}`]});
+}},
+
+{t:"Logaritmos", hacer(){
+  const b = elige([2,3,5]), m = ri(2,6), k = ri(1,4);
+  return reactivo({t:"Logaritmos",
+    q:`Si ${b}^(x${sgx(k)}) = ${Math.pow(b,m)}, entonces x vale:`,
+    ok:`${m-k}`, malos:[`${m}`,`${m+k}`,`${Math.pow(b,m)}`,`${m-k+1}`],
+    key:"Iguala las bases: si las bases son iguales, los exponentes son iguales.",
+    dev:[`${Math.pow(b,m)} = ${b}^${m}`,
+         `${b}^(x${sgx(k)}) = ${b}^${m}`,
+         `x ${sgx(k)} = ${m}`,
+         `x = ${m-k}`]});
+}},
+
+{t:"Binomio de Newton", hacer(){
+  const n = ri(4,6), b = ri(2,4), k = ri(1,n-1);
+  let c = 1; for(let i=0;i<k;i++) c = c*(n-i)/(i+1);
+  const val = c * Math.pow(b,k);
+  return reactivo({t:"Binomio de Newton",
+    q:`El coeficiente del término con x^${n-k} en (x + ${b})^${n} es:`,
+    ok:`${val}`, malos:[`${c}`,`${Math.pow(b,k)}`,`${val*b}`,`${c*k}`],
+    key:`Término general: C(n,k)·x^(n−k)·b^k. Hay que elevar el ${b} también, no solo tomar el combinatorio.`,
+    dev:[`C(${n},${k}) = ${c}`,
+         `El término es C(${n},${k})·x^${n-k}·${b}^${k}`,
+         `${b}^${k} = ${Math.pow(b,k)}`,
+         `Coeficiente = ${c} × ${Math.pow(b,k)} = ${val}`]});
+}},
+
+{t:"Progresión aritmética", hacer(){
+  const a1 = nz(-8,12), d = nz(2,9), n = ri(8,30);
+  const an = a1 + (n-1)*d;
+  return reactivo({t:"Progresión aritmética",
+    q:`En la sucesión ${a1}, ${a1+d}, ${a1+2*d}, ${a1+3*d}, … ¿qué valor ocupa el lugar ${n}?`,
+    ok:`${an}`, malos:[`${a1 + n*d}`,`${an - d}`,`${a1*n}`,`${an + d}`],
+    key:`Término general: aₙ = a₁ + (n−1)d. El (n−1) es donde se falla.`,
+    dev:[`a₁ = ${a1}, d = ${a1+d} − ${a1} = ${d}`,
+         `aₙ = a₁ + (n−1)d`,
+         `a${n} = ${a1} + (${n} − 1)(${d})`,
+         `= ${a1} + ${(n-1)*d} = ${an}`]});
+}},
+
+{t:"Progresión geométrica", hacer(){
+  const a1 = ri(2,6), r = elige([2,3]), n = ri(5,9);
+  const an = a1 * Math.pow(r,n-1);
+  return reactivo({t:"Progresión geométrica",
+    q:`Si el primer término de una progresión geométrica es ${a1} y la razón es ${r}, ¿cuánto vale el término ${n}?`,
+    ok:`${an}`, malos:[`${a1*Math.pow(r,n)}`,`${a1*r*n}`,`${an*r}`,`${a1+(n-1)*r}`],
+    key:`Término general: aₙ = a₁·r^(n−1), con exponente n−1, no n.`,
+    dev:[`aₙ = a₁ · r^(n−1)`,
+         `a${n} = ${a1} · ${r}^${n-1}`,
+         `${r}^${n-1} = ${Math.pow(r,n-1)}`,
+         `a${n} = ${a1} × ${Math.pow(r,n-1)} = ${an}`]});
+}},
+
+{t:"Porcentajes", hacer(){
+  const p = ri(8,40)*25, d1 = elige([10,15,20,25,30]), d2 = elige([5,10,15,20]);
+  const fin = p * (100-d1)/100 * (100-d2)/100;
+  const ingenuo = p * (100-d1-d2)/100;
+  if(Math.round(fin) !== fin || fin === ingenuo) return null;
+  return reactivo({t:"Porcentajes",
+    q:`Un artículo cuesta $${p}. Se aplica ${d1}% de descuento y después ${d2}% adicional sobre el precio ya rebajado. El precio final es:`,
+    ok:`$${fin}`, malos:[`$${ingenuo}`,`$${p*(100-d1)/100}`,`$${p*(100-d2)/100}`,`$${Math.round(fin+p*0.05)}`],
+    key:"Los descuentos sucesivos no se suman: el segundo se aplica sobre lo que ya quedó rebajado.",
+    dev:[`Primer descuento: ${p} × ${(100-d1)/100} = ${p*(100-d1)/100}`,
+         `Segundo descuento sobre ese resultado: ${p*(100-d1)/100} × ${(100-d2)/100} = ${fin}`,
+         `Sumar ${d1}% + ${d2}% daría ${ingenuo}, que es la trampa del reactivo.`]});
+}},
+
+{t:"Proporcionalidad inversa", hacer(){
+  const o1 = ri(3,9), dias = ri(6,20), o2 = ri(2,12);
+  const t = o1*dias/o2;
+  if(o1 === o2 || Math.round(t*10)/10 !== t) return null;
+  return reactivo({t:"Proporcionalidad inversa",
+    q:`Si ${o1} obreros levantan una barda en ${dias} días, ¿cuántos días tardarían ${o2} obreros trabajando al mismo ritmo?`,
+    ok:`${t} días`, malos:[`${Math.round(dias*o2/o1*10)/10} días`,`${dias} días`,`${o1*o2} días`,`${Math.round(t)+1} días`],
+    key:"Más obreros, menos días: es inversa. El producto obreros × días se mantiene constante.",
+    dev:[`Trabajo total = ${o1} × ${dias} = ${o1*dias} obrero-días`,
+         `Con ${o2} obreros: ${o1*dias} / ${o2} = ${t} días`,
+         `Si hubieras usado regla de tres directa te daría ${Math.round(dias*o2/o1*10)/10}, que es el distractor.`]});
+}},
+
+{t:"La recta", hacer(){
+  const [p,q] = elige(TERNAS), h = elige(TERNAS);
+  const x1 = ri(-6,6), y1 = ri(-6,6);
+  const x2 = x1 + p, y2 = y1 + q;
+  const d = h[2] && Math.sqrt(p*p+q*q);
+  return reactivo({t:"La recta",
+    q:`La distancia entre los puntos A(${x1}, ${y1}) y B(${x2}, ${y2}) es:`,
+    ok:`${d}`, malos:[`${p+q}`,`${Math.abs(p-q)}`,`${d*2}`,`√${p*p+q*q+1}`],
+    key:"Distancia = √[(x₂−x₁)² + (y₂−y₁)²]. Es el teorema de Pitágoras aplicado al plano.",
+    dev:[`x₂ − x₁ = ${x2} − (${x1}) = ${p}`,
+         `y₂ − y₁ = ${y2} − (${y1}) = ${q}`,
+         `d = √(${p}² + ${q}²) = √(${p*p} + ${q*q}) = √${p*p+q*q} = ${d}`]});
+}},
+
+{t:"La recta", hacer(){
+  const x1 = ri(-6,6), y1 = ri(-6,6), dx = nz(1,5), m = nz(-5,5);
+  const x2 = x1 + dx, y2 = y1 + m*dx;
+  return reactivo({t:"La recta",
+    q:`La pendiente de la recta que pasa por (${x1}, ${y1}) y (${x2}, ${y2}) es:`,
+    ok:`${m}`, malos:[`${-m}`, frac(dx, m*dx), `${m*dx}`, `${m+1}`],
+    key:"m = (y₂ − y₁)/(x₂ − x₁). Si inviertes el orden arriba y abajo obtienes el recíproco, no la pendiente.",
+    dev:[`m = (${y2} − (${y1})) / (${x2} − (${x1}))`,
+         `= ${y2-y1} / ${dx}`,
+         `= ${m}`]});
+}},
+
+{t:"Circunferencia", hacer(){
+  const h = nz(-6,6), k = nz(-6,6), r = ri(2,9);
+  return reactivo({t:"Circunferencia",
+    q:`La ecuación ordinaria de la circunferencia con centro (${h}, ${k}) y radio ${r} es:`,
+    ok:`(x${sgx(-h)})² + (y${sgx(-k)})² = ${r*r}`,
+    malos:[`(x${sgx(h)})² + (y${sgx(k)})² = ${r*r}`,
+           `(x${sgx(-h)})² + (y${sgx(-k)})² = ${r}`,
+           `(x${sgx(-k)})² + (y${sgx(-h)})² = ${r*r}`,
+           `(x${sgx(h)})² + (y${sgx(-k)})² = ${r*r}`],
+    key:"En la ecuación los signos del centro van invertidos, y el lado derecho es r², no r.",
+    dev:[`Forma ordinaria: (x − h)² + (y − k)² = r²`,
+         `h = ${h}, k = ${k}, r = ${r}`,
+         `(x − (${h}))² + (y − (${k}))² = ${r}²`,
+         `(x${sgx(-h)})² + (y${sgx(-k)})² = ${r*r}`]});
+}},
+
+{t:"Parábola", hacer(){
+  const p = ri(1,9) * (rnd() < 0.5 ? 1 : -1), horiz = rnd() < 0.5;
+  const c = 4*p;
+  const ecu = horiz ? `y² = ${c}x` : `x² = ${c}y`;
+  const dir = horiz ? (p > 0 ? "la derecha" : "la izquierda") : (p > 0 ? "arriba" : "abajo");
+  return reactivo({t:"Parábola",
+    q:`El foco de la parábola ${ecu} se localiza en:`,
+    ok: horiz ? `(${p}, 0)` : `(0, ${p})`,
+    malos:[ horiz ? `(0, ${p})` : `(${p}, 0)`, horiz ? `(${-p}, 0)` : `(0, ${-p})`,
+            `(${c}, 0)`, `(0, ${c})`, horiz ? `(${2*p}, 0)` : `(0, ${2*p})`],
+    key:`En ${horiz ? "y² = 4px el foco es (p, 0)" : "x² = 4py el foco es (0, p)"}; aquí 4p = ${c}, así que p = ${p}. El signo dice hacia dónde abre.`,
+    dev:[`${horiz ? "y² = 4px" : "x² = 4py"}`,
+         `4p = ${c}`,
+         `p = ${p}`,
+         `Foco: ${horiz ? `(${p}, 0)` : `(0, ${p})`}`,
+         `Como p es ${p > 0 ? "positivo" : "negativo"}, la parábola abre hacia ${dir}.`]});
+}},
+
+{t:"Elipse", hacer(){
+  const [a,b,c] = elige(ELIPSES);
+  const horiz = rnd() < 0.5;
+  const ecu = horiz ? `x²/${a*a} + y²/${b*b} = 1` : `x²/${b*b} + y²/${a*a} = 1`;
+  return reactivo({t:"Elipse",
+    q:`Los focos de la elipse ${ecu} están en:`,
+    ok: horiz ? `(±${c}, 0)` : `(0, ±${c})`,
+    malos:[ horiz ? `(0, ±${c})` : `(±${c}, 0)`,`(±${a}, 0)`,`(0, ±${b})`,`(±${a+b}, 0)`],
+    key:`En la elipse c² = a² − b². Aquí a = ${a}, b = ${b}, así que c = ${c}. El eje focal es el del denominador mayor.`,
+    dev:[`a² = ${a*a} → a = ${a}  (denominador mayor)`,
+         `b² = ${b*b} → b = ${b}`,
+         `c² = a² − b² = ${a*a} − ${b*b} = ${c*c}`,
+         `c = ${c}`,
+         horiz ? `El mayor está bajo x², así que el eje focal es horizontal: (±${c}, 0)`
+               : `El mayor está bajo y², así que el eje focal es vertical: (0, ±${c})`]});
+}},
+
+{t:"Hipérbola", hacer(){
+  const a = ri(2,9), b = ri(2,9);
+  const c2 = a*a + b*b;
+  const c = Math.sqrt(c2);
+  const cs = Number.isInteger(c) ? String(c) : `√${c2}`;
+  return reactivo({t:"Hipérbola",
+    q:`Las asíntotas de la hipérbola x²/${a*a} − y²/${b*b} = 1 son:`,
+    ok:`y = ±(${b}/${a})x`, malos:[`y = ±(${a}/${b})x`,`y = ±${b}x`,`y = ±(${b*b}/${a*a})x`,`y = ±(${a}/${b})x + ${b}`],
+    key:`Asíntotas de x²/a² − y²/b² = 1: y = ±(b/a)x. Aquí a = ${a} y b = ${b}.`,
+    dev:[`a² = ${a*a} → a = ${a}`,
+         `b² = ${b*b} → b = ${b}`,
+         `y = ±(b/a)x = ±(${b}/${a})x`,
+         `De paso: c² = a² + b² = ${c2}, o sea c = ${cs} (en la hipérbola se suma, no se resta).`]});
+}},
+
+{t:"Trigonometría", hacer(){
+  const g = elige([30,45,60,90,120,135,150,180,210,225,240,270,300,315,330]);
+  const n = g, d = 180, gg = mcd(n,d);
+  const num = n/gg, den = d/gg;
+  const txt = den === 1 ? (num === 1 ? "π" : num + "π") : (num === 1 ? "π/" + den : num + "π/" + den);
+  return reactivo({t:"Trigonometría",
+    q:`${g}° expresados en radianes equivalen a:`,
+    ok:txt, malos:[`${num}π/${den+1}`,`${num+1}π/${den}`,`${g}π/360`,`${den}π/${num}`],
+    key:"Multiplica por π/180 y simplifica la fracción.",
+    dev:[`${g}° × (π/180°)`,
+         `= ${g}π/180`,
+         `Simplifica dividiendo entre ${gg}: ${txt}`]});
+}},
+
+{t:"Razones trigonométricas", hacer(){
+  const [co,ca,hi] = elige(TERNAS);
+  const cual = elige(["sen","cos","tan"]);
+  const val = cual === "sen" ? frac(co,hi) : cual === "cos" ? frac(ca,hi) : frac(co,ca);
+  return reactivo({t:"Razones trigonométricas",
+    q:`En un triángulo rectángulo el cateto opuesto al ángulo θ mide ${co}, el cateto adyacente ${ca} y la hipotenusa ${hi}. El valor de ${cual} θ es:`,
+    ok:val, malos:[frac(ca,hi),frac(co,hi),frac(co,ca),frac(hi,co)],
+    key:"SOH-CAH-TOA: seno es opuesto sobre hipotenusa, coseno adyacente sobre hipotenusa, tangente opuesto sobre adyacente.",
+    dev:[`opuesto = ${co}, adyacente = ${ca}, hipotenusa = ${hi}`,
+         cual === "sen" ? `sen θ = op/hip = ${co}/${hi} = ${val}`
+       : cual === "cos" ? `cos θ = ady/hip = ${ca}/${hi} = ${val}`
+                        : `tan θ = op/ady = ${co}/${ca} = ${val}`,
+         `Comprueba la terna: ${co}² + ${ca}² = ${co*co+ca*ca} = ${hi}² ✓`]});
+}},
+
+{t:"Probabilidad", hacer(){
+  const r = ri(3,9), a = ri(3,9), v = ri(2,7);
+  const tot = r+a+v;
+  const col = elige([["rojas",r],["azules",a],["verdes",v]]);
+  return reactivo({t:"Probabilidad",
+    q:`Una urna tiene ${r} canicas rojas, ${a} azules y ${v} verdes. Si se saca una al azar, ¿cuál es la probabilidad de que sea ${col[0]}?`,
+    ok:frac(col[1],tot), malos:[frac(col[1],tot-col[1]),frac(tot,col[1]),frac(col[1]+1,tot),frac(1,3)],
+    key:"Probabilidad = casos favorables entre casos totales. El total incluye las canicas del color buscado.",
+    dev:[`Favorables: ${col[1]}`,
+         `Totales: ${r} + ${a} + ${v} = ${tot}`,
+         `P = ${col[1]}/${tot} = ${frac(col[1],tot)}`]});
+}},
+
+{t:"Estadística", hacer(){
+  const n = 5;
+  const xs = []; for(let i=0;i<n;i++) xs.push(ri(2,40));
+  const suma = xs.reduce((a,b)=>a+b,0);
+  if(suma % n !== 0) return null;
+  const media = suma/n;
+  const orden = xs.slice().sort((a,b)=>a-b);
+  const mediana = orden[2];
+  if(media === mediana) return null;
+  return reactivo({t:"Estadística",
+    q:`Los datos son ${xs.join(", ")}. La media y la mediana valen, respectivamente:`,
+    ok:`${media} y ${mediana}`, malos:[`${mediana} y ${media}`,`${media} y ${orden[1]}`,`${orden[0]} y ${mediana}`,`${media} y ${orden[3]}`],
+    key:"La media es el promedio; la mediana es el valor de en medio después de ordenar los datos.",
+    dev:[`Media: (${xs.join(" + ")}) / ${n} = ${suma}/${n} = ${media}`,
+         `Ordenados: ${orden.join(", ")}`,
+         `Mediana: el tercero de cinco = ${mediana}`]});
+}},
+
+{t:"Cálculo diferencial", solo:"IPN", hacer(){
+  const a = ri(2,9), n = ri(2,5), b = ri(2,9), c = ri(1,9);
+  return reactivo({t:"Cálculo diferencial", solo:"IPN",
+    q:`La derivada de f(x) = ${a}x^${n} ${sgx(b)}x ${sgx(c)} es:`,
+    ok:`${a*n}x^${n-1} + ${b}`,
+    malos:[`${a*n}x^${n} + ${b}`,`${a}x^${n-1} + ${b}`,`${a*n}x^${n-1} + ${b} + ${c}`,`${a*n}x^${n-1}`],
+    key:"Regla de la potencia: baja el exponente como factor y réstale uno. La constante se deriva a cero.",
+    dev:[`d/dx(${a}x^${n}) = ${a}·${n}·x^${n-1} = ${a*n}x^${n-1}`,
+         `d/dx(${b}x) = ${b}`,
+         `d/dx(${c}) = 0`,
+         `f'(x) = ${a*n}x^${n-1} + ${b}`]});
+}},
+
+{t:"Cálculo integral", solo:"IPN", hacer(){
+  const n = ri(1,5), a = (n+1)*ri(1,4);
+  return reactivo({t:"Cálculo integral", solo:"IPN",
+    q:`El resultado de ∫ ${a}x^${n} dx es:`,
+    ok:`${a/(n+1)}x^${n+1} + C`,
+    malos:[`${a*n}x^${n-1} + C`,`${a}x^${n+1} + C`,`${a/(n+1)}x^${n} + C`,`${a*(n+1)}x^${n+1} + C`],
+    key:"Integral de una potencia: sube el exponente en uno y divide entre el nuevo exponente. Y nunca olvides la constante.",
+    dev:[`∫ xⁿ dx = x^(n+1)/(n+1) + C`,
+         `∫ ${a}x^${n} dx = ${a}·x^${n+1}/${n+1} + C`,
+         `= ${a/(n+1)}x^${n+1} + C`]});
+}}
+
+];
+
+/* Produce `k` reactivos por generador. Se llama al armar cada examen,
+   así que los números son nuevos en cada intento — salvo en una versión
+   numerada, donde el rnd sembrado los reproduce idénticos. */
+let GENERADOS = [];
+function generar(k){
+  GENERADOS = [];
+  for(const g of GEN){
+    const hechos = new Set();
+    let intentos = 0;
+    while(hechos.size < k && intentos < k*8){
+      intentos++;
+      const r = g.hacer();
+      if(!r) continue;
+      if(hechos.has(r.q)) continue;
+      hechos.add(r.q);
+      r.id = "g:" + idDe(r.q);
+      GENERADOS.push(r);
+    }
+  }
+}
 
 /* ===================== ESTADO ===================== */
 const MATERIAS = ORDEN.filter(m => BANK.some(q => q.s === m));
@@ -1666,7 +2129,10 @@ const memoriaActiva = () => noRepetir && !(modo === "simulacro" && version !== "
 
 function marcarVistos(lista){
   if(!noRepetir) return;
-  lista.forEach(q => { if(q.id) vistos[q.id] = vecesVisto(q) + 1; });
+  /* Los reactivos generados no se registran: sus números cambian en
+     cada examen, así que nunca son el mismo reactivo dos veces y
+     guardarlos solo haría crecer el registro sin límite. */
+  lista.forEach(q => { if(q.id && !q.gen) vistos[q.id] = vecesVisto(q) + 1; });
   guardarVistos();
 }
 function olvidarVistos(){ vistos = {}; guardarVistos(); paintCover(); }
@@ -1691,7 +2157,13 @@ function porFrescura(gs){
 
 const pesos = () => PERFILES[area].pesos;
 const totalExamen = () => Object.values(pesos()).reduce((a,b)=>a+b,0);
-const fuente = () => conReto ? BANK : BANK.filter(q => q.nivel !== "reto");
+/* El banco vivo: los reactivos escritos a mano más los que produjeron
+   los generadores para este examen. Los temas marcados solo:"IPN"
+   (cálculo) no aparecen en un simulacro de la UNAM, porque ahí no se
+   evalúan. Sí entran en el del IPN, en el mixto y en práctica. */
+const fuente = () => BANK.concat(GENERADOS).filter(q =>
+  (conReto || q.nivel !== "reto") &&
+  (!q.solo || modo !== "simulacro" || inst === "Mixto" || q.solo === inst));
 const RETOS = BANK.filter(q => q.nivel === "reto");
 
 /* ===================== PORTADA ===================== */
@@ -1779,7 +2251,9 @@ function paintCover(){
     }).join("") + '<div class="row tot"><span class="nm">Total</span><span class="pc">'+totalExamen()+'</span></div>';
     $("notaSim").textContent = inst === "UNAM"
       ? "120 reactivos en 3 horas, agrupados por materia y sin retroalimentación hasta el final."
-      : "140 reactivos en 3 horas. Los 10 de Inglés aparecen en el examen real pero no suman a tu puntaje de admisión; aquí se cuentan aparte al final.";
+      : inst === "IPN"
+      ? "140 reactivos en 3 horas. Los 10 de Inglés aparecen en el examen real pero no suman a tu puntaje de admisión."
+      : "130 reactivos en 3 horas. Este examen no existe: mezcla las dos casas para entrenar los dos a la vez. Cada sección pesa el promedio de lo que le piden la UNAM y el IPN, y entra todo lo que cualquiera de las dos evalúa — Literatura y Geografía por la UNAM, Inglés y cálculo por el IPN.";
     return;
   }
 
@@ -1809,8 +2283,13 @@ function bloques(lista){
   return out;
 }
 
-function tomar(seccion, n){
-  const f = filtroDe(seccion);
+/* `usados` trae los ids que ya entraron en otra sección de este mismo
+   examen. Hace falta porque dos secciones pueden solaparse: un reactivo
+   de Literatura encadenado a un poema califica también como Competencia
+   Lectora, y sin esto saldría dos veces en el examen mixto. */
+function tomar(seccion, n, usados){
+  const ff = filtroDe(seccion);
+  const f = usados ? (q => ff(q) && !usados.has(q.id)) : ff;
   const gs = porFrescura(bloques(fuente().filter(f)));
   const out = [];
   for(const g of gs){
@@ -1832,17 +2311,28 @@ function tomar(seccion, n){
   return out;
 }
 
+/* Cuántos reactivos produce cada generador por examen. Con 26
+   generadores esto da más de 200 reactivos de matemáticas nuevos en
+   cada intento, de los que el examen toma los que necesita. */
+const POR_GENERADOR = 10;
+
 function armarSimulacro(){
   sembrar();
-  const out = [];
+  generar(POR_GENERADOR);
+  const out = [], usados = new Set();
   /* El orden de las secciones lo marca el perfil, no el banco: el IPN
      agrupa distinto que la UNAM. */
-  Object.keys(pesos()).forEach(s => out.push(...tomar(s, pesos()[s])));
+  Object.keys(pesos()).forEach(s => {
+    const bloque = tomar(s, pesos()[s], usados);
+    bloque.forEach(q => usados.add(q.id));
+    out.push(...bloque);
+  });
   return out;
 }
 
 function armarPractica(){
   rnd = Math.random;
+  generar(POR_GENERADOR);
   const plano = [];
   porFrescura(bloques(fuente().filter(q=>sel.has(q.s)))).forEach(g => plano.push(...g));
   return largo === "Todas" ? plano : plano.slice(0, Math.min(largo, plano.length));
@@ -2137,6 +2627,8 @@ document.addEventListener("keydown", e=>{
 /* ---------- aviso de inactividad ---------- */
 $("mantenerSesion").onclick = ()=>{ ocultarAvisoInactivo(); pedirWakeLock(); };
 
+/* una tanda inicial, para que la portada muestre cuántos reactivos hay de verdad */
+generar(POR_GENERADOR);
 paintCover();
 </script>
 <script>
