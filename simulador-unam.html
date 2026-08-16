@@ -138,8 +138,10 @@
   .devlabel{font-family:var(--sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
     color:var(--gris);margin:14px 0 6px}
   ol.dev{margin:0;padding-left:20px}
-  ol.dev li{margin:3px 0}
+  ol.dev li{margin:3px 0;white-space:pre-wrap}
   ol.dev.mono li{font-family:var(--mono);font-size:14.5px;line-height:1.7}
+  /* line-height:0 evita que el superíndice separe los renglones */
+  ol.dev sup, .q sup, .otxt sup{font-size:.7em;line-height:0;vertical-align:.5em}
   .next{
     margin-top:22px;padding:13px 22px;border:none;cursor:pointer;background:var(--tinta);color:#fff;
     font-family:var(--sans);font-size:14px;font-weight:600;
@@ -1460,6 +1462,152 @@ const BANK = [
 
 {s:"Español",t:"Concordancia verbal",q:"Selecciona la opción escrita correctamente:",o:["La mayoría de los estudiantes entregaron su trabajo a tiempo","La mayoría de los estudiantes entregó sus trabajo a tiempo","La mayoría de los estudiantes entregaron sus trabajo a tiempo","La mayoría de los estudiante entregó su trabajo a tiempo"],a:0,
  key:"Con «la mayoría de + plural» la Academia admite verbo en singular o en plural. Lo que sí falla en las otras opciones es «sus trabajo» y «los estudiante»."}
+,
+
+{s:"Matemáticas",nivel:"reto",t:"Conteo · estilo CONAMAT",
+ q:"¿Cuántos números de tres cifras son múltiplos de 5 y tienen sus tres cifras distintas entre sí?",
+ o:["136","144","162","180","90"],a:0,mono:true,
+ key:"Sepáralo en dos casos según la última cifra, y cuida que el primer dígito no pueda ser cero.",
+ dev:["Un multiplo de 5 termina en 0 o en 5. Son dos casos distintos.",
+      "Caso A, termina en 0: centenas puede ser 1-9 (9 formas)",
+      "  decenas: quedan 8 digitos libres (no el 0 ni el de centenas)",
+      "  9 x 8 = 72",
+      "Caso B, termina en 5: centenas 1-9 pero sin el 5, son 8 formas",
+      "  decenas: quedan 8 digitos (10 menos el 5 y el de centenas)",
+      "  8 x 8 = 64",
+      "Total: 72 + 64 = 136",
+      "El error tipico es olvidar que en el caso B el 5 ya se uso."]},
+
+{s:"Matemáticas",nivel:"reto",t:"Series telescópicas · estilo CONAMAT",
+ q:"El valor de 1/(1·2) + 1/(2·3) + 1/(3·4) + … + 1/(99·100) es:",
+ o:["99/100","1","49/50","100/99","9999/10000"],a:0,mono:true,
+ key:"Cada término se parte en una resta. Al sumarlos casi todo se cancela: por eso se llama telescópica.",
+ dev:["Descompon cada termino:  1/(k(k+1)) = 1/k - 1/(k+1)",
+      "La suma queda:",
+      "  (1/1 - 1/2) + (1/2 - 1/3) + (1/3 - 1/4) + ... + (1/99 - 1/100)",
+      "Cada -1/k se cancela con el +1/k siguiente",
+      "Solo sobreviven el primero y el ultimo:  1 - 1/100",
+      "= 99/100"]},
+
+{s:"Matemáticas",nivel:"reto",t:"Geometría · estilo CONAMAT",
+ q:"En un triángulo equilátero de lado 12 se inscribe una circunferencia. El área de esa circunferencia es:",
+ o:["12π","36π","6π","24π","144π"],a:0,mono:true,
+ key:"El radio de la circunferencia inscrita en un equilátero es un tercio de su altura.",
+ dev:["Altura del equilatero:  h = (lado x raiz3)/2 = (12 x raiz3)/2 = 6raiz3",
+      "En un equilatero el incentro divide la altura en razon 2:1",
+      "  r = h/3 = 6raiz3/3 = 2raiz3",
+      "Area = pi r^2 = pi (2raiz3)^2",
+      "  (2raiz3)^2 = 4 x 3 = 12",
+      "Area = 12pi"]},
+
+{s:"Matemáticas",nivel:"reto",t:"Problema de reloj · estilo CONAMAT",
+ q:"Entre las 4:00 y las 5:00, ¿en qué momento las manecillas del reloj forman por primera vez un ángulo recto?",
+ o:["4:05 5/11","4:05","4:10","4:15","4:20 4/11"],a:0,mono:true,
+ key:"Las dos manecillas se mueven. El minutero avanza 6° por minuto y el horario 0.5°, así que la diferencia se cierra a 5.5° por minuto.",
+ dev:["A las 4:00 el horario esta en 120 grados y el minutero en 0",
+      "Despues de m minutos:",
+      "  minutero:  6m grados",
+      "  horario:   120 + 0.5m grados",
+      "Angulo entre ellas: (120 + 0.5m) - 6m = 120 - 5.5m",
+      "Queremos que valga 90 grados:",
+      "  120 - 5.5m = 90",
+      "  5.5m = 30",
+      "  m = 30/5.5 = 60/11 = 5 y 5/11",
+      "Son las 4:05 y 5/11 de minuto",
+      "Si tomas el horario como fijo en 120 te da 4:15, que es el distractor."]},
+
+{s:"Matemáticas",nivel:"reto",t:"Álgebra · estilo CONAMAT",
+ q:"Si x + y = 12 y xy = 32, ¿cuánto vale x² + y²?",
+ o:["80","144","208","112","64"],a:0,mono:true,
+ key:"No hace falta encontrar x ni y. Eleva la suma al cuadrado y despeja.",
+ dev:["(x + y)^2 = x^2 + 2xy + y^2",
+      "12^2 = x^2 + y^2 + 2(32)",
+      "144 = x^2 + y^2 + 64",
+      "x^2 + y^2 = 144 - 64 = 80",
+      "Comprobacion: x e y son 4 y 8;  16 + 64 = 80 ✓",
+      "Resolver el sistema tambien funciona, pero tarda mas."]},
+
+{s:"Matemáticas",nivel:"reto",t:"Permutaciones · estilo CONAMAT",
+ q:"¿De cuántas maneras distintas pueden sentarse 5 personas en una fila si dos de ellas deben quedar siempre juntas?",
+ o:["48","24","120","60","96"],a:0,mono:true,
+ key:"Amarra a las dos personas como si fueran una sola, y no olvides que entre ellas también pueden intercambiarse.",
+ dev:["Trata a la pareja como un solo bloque",
+      "Ahora hay 4 objetos que ordenar: el bloque y las otras 3 personas",
+      "  4! = 24 maneras",
+      "Dentro del bloque las dos personas pueden ir en 2 ordenes",
+      "  2! = 2",
+      "Total: 24 x 2 = 48",
+      "Si olvidas el factor 2 te queda 24, que es el distractor principal."]},
+
+{s:"Matemáticas",nivel:"reto",t:"Teoría de números · estilo CONAMAT",
+ q:"¿Cuántos divisores positivos tiene el número 360?",
+ o:["24","18","12","36","20"],a:0,mono:true,
+ key:"Descompón en factores primos y suma uno a cada exponente antes de multiplicar.",
+ dev:["Factoriza:  360 = 2^3 x 3^2 x 5^1",
+      "Un divisor se forma eligiendo cuanto 2, cuanto 3 y cuanto 5 lleva",
+      "  el exponente del 2 puede ser 0,1,2,3  -> 4 opciones",
+      "  el del 3 puede ser 0,1,2            -> 3 opciones",
+      "  el del 5 puede ser 0,1              -> 2 opciones",
+      "Total: 4 x 3 x 2 = 24 divisores",
+      "La regla general: si n = p^a x q^b x r^c, tiene (a+1)(b+1)(c+1) divisores."]},
+
+{s:"Matemáticas",nivel:"reto",t:"Porcentajes · estilo CONAMAT",
+ q:"El precio de un artículo aumenta 25% y después el precio nuevo disminuye 20%. Respecto del precio original, el precio final:",
+ o:["Es igual al original","Es 5% mayor","Es 5% menor","Es 45% mayor","Es 1% menor"],a:0,mono:false,
+ key:"Los porcentajes no se cancelan sumando y restando: cada uno se aplica sobre una base distinta.",
+ dev:["Toma 100 como precio original",
+      "Sube 25%:   100 x 1.25 = 125",
+      "Baja 20% del precio NUEVO:  125 x 0.80 = 100",
+      "Vuelve exactamente al original",
+      "La razon: 1.25 x 0.80 = 1 exacto",
+      "Sumar +25% y -20% daria +5%, que es la trampa del reactivo."]},
+
+{s:"Matemáticas",nivel:"reto",t:"Aritmética modular · estilo CONAMAT",
+ q:"¿Cuál es la última cifra de 7²⁰²⁴?",
+ o:["1","3","7","9","4"],a:0,mono:true,
+ key:"Las últimas cifras de las potencias de 7 se repiten en ciclo. Encuentra el ciclo y ubica el exponente dentro de él.",
+ dev:["Ultimas cifras de las potencias de 7:",
+      "  7^1 = 7,  7^2 = 49 -> 9,  7^3 = 343 -> 3,  7^4 = 2401 -> 1",
+      "  7^5 vuelve a terminar en 7",
+      "El ciclo es 7, 9, 3, 1 y tiene longitud 4",
+      "Divide el exponente entre 4:  2024 / 4 = 506 exacto, residuo 0",
+      "Residuo 0 significa la ultima posicion del ciclo",
+      "La ultima cifra es 1"]},
+
+{s:"Matemáticas",nivel:"reto",t:"Geometría del espacio · estilo CONAMAT",
+ q:"Un cubo de arista 6 se pinta por completo y luego se corta en cubitos de arista 1. ¿Cuántos cubitos quedan con exactamente dos caras pintadas?",
+ o:["48","36","96","8","24"],a:0,mono:true,
+ key:"Los cubitos con dos caras pintadas son los de las aristas, sin contar las esquinas.",
+ dev:["Un cubito tiene 2 caras pintadas si esta sobre una arista pero no en un vertice",
+      "El cubo tiene 12 aristas",
+      "Cada arista mide 6 cubitos, pero los 2 de los extremos son vertices",
+      "  quedan 6 - 2 = 4 cubitos por arista",
+      "Total: 12 x 4 = 48",
+      "De paso: 8 cubitos tienen 3 caras (los vertices),",
+      "         6 x 4^2 = 96 tienen 1 cara (las caras),",
+      "         4^3 = 64 no tienen ninguna (el interior).",
+      "Suma: 8 + 48 + 96 + 64 = 216 = 6^3 ✓"]},
+
+{s:"Matemáticas",nivel:"reto",t:"Composición de funciones · estilo CONAMAT",
+ q:"Si f(x) = 2x + 3 y f(g(x)) = 4x − 1, entonces g(x) es:",
+ o:["2x − 2","2x + 2","4x − 4","x − 2","2x − 4"],a:0,mono:true,
+ key:"Sustituye g(x) dentro de f y compara con lo que debe dar.",
+ dev:["f toma su argumento, lo duplica y le suma 3",
+      "f(g(x)) = 2 g(x) + 3",
+      "Debe ser igual a 4x - 1:",
+      "  2 g(x) + 3 = 4x - 1",
+      "  2 g(x) = 4x - 4",
+      "  g(x) = 2x - 2",
+      "Verifica: f(2x-2) = 2(2x-2) + 3 = 4x - 4 + 3 = 4x - 1 ✓"]},
+
+{s:"Matemáticas",nivel:"reto",t:"Promedios · estilo CONAMAT",
+ q:"El promedio de 10 números es 15. Si se elimina uno de ellos, el promedio de los 9 restantes es 16. ¿Qué número se eliminó?",
+ o:["6","10","15","24","1"],a:0,mono:true,
+ key:"Convierte cada promedio en una suma total. La diferencia entre las dos sumas es el número que falta.",
+ dev:["Suma de los 10 numeros:  10 x 15 = 150",
+      "Suma de los 9 restantes:  9 x 16 = 144",
+      "El eliminado es la diferencia:  150 - 144 = 6",
+      "Tiene sentido: al quitar un numero por debajo del promedio, el promedio sube."]}
 
 ];
 
@@ -1579,9 +1727,23 @@ const elige = arr => arr[(rnd()*arr.length)|0];
 const nz = (a,b) => { let v = 0; while(v === 0) v = ri(a,b); return v; };
 const mcd = (a,b) => { a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a || 1; };
 const sg  = n => (n < 0 ? " − " + Math.abs(n) : " + " + n);
-const sgx = n => (n < 0 ? "−" + Math.abs(n) : "+" + n);
+/* versión pegada, solo para lo que va dentro de un superíndice, donde
+   un espacio se vería raro */
+const sgt = n => (n < 0 ? "−" + Math.abs(n) : "+" + n);
+/* signo + coeficiente + variable, omitiendo el 1: " + y", " − 3y" */
+const term = (n, v) => (n < 0 ? " − " : " + ") + (Math.abs(n) === 1 ? "" : Math.abs(n)) + v;
 const frac = (n,d) => { if(d<0){ n=-n; d=-d; } const g=mcd(n,d); n/=g; d/=g; return d===1 ? String(n) : n+"/"+d; };
 const coef = a => a === 1 ? "" : a === -1 ? "−" : String(a);
+
+/* Los exponentes van en superíndice de verdad (x², no x^2), como en el
+   examen impreso. Escribirlos con acento circunflejo es notación de
+   teclado, no de matemáticas, y acostumbra el ojo a algo que no vas a
+   ver el día de la prueba. */
+const SUPS = {"0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷",
+              "8":"⁸","9":"⁹","-":"⁻","−":"⁻","+":"⁺","(":"⁽",")":"⁾","x":"ˣ","n":"ⁿ"};
+const sup = e => String(e).split("").map(c => SUPS[c] || c).join("");
+/* Potencia ya formateada: x¹ se escribe x, y x⁰ se escribe 1 */
+const pot = (base, e) => e === 0 ? "1" : e === 1 ? base : base + sup(e);
 
 /* Ternas pitagóricas, para que raíces y distancias den exacto */
 const TERNAS = [[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15],[7,24,25],[20,21,29],[9,40,41]];
@@ -1592,17 +1754,24 @@ const ELIPSES = [[5,3,4],[13,5,12],[10,6,8],[25,7,24],[17,8,15],[15,9,12],
 /* Arma el reactivo: mete la correcta y los distractores, descarta
    duplicados y baraja la posición. Si los distractores colisionaron y
    quedan menos de cuatro opciones, devuelve null y se intenta otro. */
+/* `impreso` cambia el guion de teclado por el signo menos de verdad
+   (−, U+2212). JavaScript escribe -5 con guion; en un examen impreso
+   eso se ve como −5, y ese es el detalle que se nota. Solo se aplica a
+   la pregunta y las opciones: la clave lleva prosa con guiones
+   legítimos, como SOH-CAH-TOA. */
+const impreso = s => String(s).replace(/-/g, "−");
+
 function reactivo(o){
-  const vistas = [String(o.ok)];
+  const vistas = [impreso(o.ok)];
   for(const m of o.malos){
-    const s = String(m);
+    const s = impreso(m);
     if(!vistas.includes(s)) vistas.push(s);
     if(vistas.length === 4) break;
   }
   if(vistas.length < 4) return null;
   const ix = shuffle(vistas.map((_,i)=>i));
   return { s: o.s || "Matemáticas", t: o.t, gen: true, solo: o.solo,
-           q: o.q, o: ix.map(i=>vistas[i]), a: ix.indexOf(0),
+           q: impreso(o.q), o: ix.map(i=>vistas[i]), a: ix.indexOf(0),
            mono: o.mono !== false, key: o.key, dev: o.dev };
 }
 
@@ -1612,7 +1781,7 @@ const GEN = [
   const x = nz(-9,12), a = ri(3,9), c = ri(1,a-1), b = nz(-15,15);
   const d = (a-c)*x + b;
   return reactivo({t:"Ecuaciones de primer grado",
-    q:`Resuelve ${a}x${sg(b)} = ${c}x${sg(d)}`,
+    q:`Resuelve ${coef(a)}x${sg(b)} = ${coef(c)}x${sg(d)}`,
     ok:`x = ${x}`, malos:[`x = ${x+1}`,`x = ${-x}`,`x = ${x-2}`,`x = ${x+3}`],
     key:"Todo lo que tiene x de un lado, los números del otro.",
     dev:[`${a}x${sg(b)} = ${c}x${sg(d)}`,
@@ -1628,16 +1797,16 @@ const GEN = [
   if(a1*b2 - a2*b1 === 0) return null;
   const c1 = a1*x + b1*y, c2 = a2*x + b2*y;
   return reactivo({t:"Sistemas de ecuaciones",
-    q:`Resuelve el sistema ${a1}x ${sgx(b1)}y = ${c1} ; ${a2}x ${sgx(b2)}y = ${c2}`,
+    q:`Resuelve el sistema ${coef(a1)}x${term(b1,"y")} = ${c1} ; ${coef(a2)}x${term(b2,"y")} = ${c2}`,
     ok:`x = ${x}, y = ${y}`,
     malos:[`x = ${y}, y = ${x}`,`x = ${x+1}, y = ${y-1}`,`x = ${-x}, y = ${y}`,`x = ${x}, y = ${y+2}`],
     key:"Por reducción: multiplica una ecuación para que un coeficiente se cancele al sumar.",
     dev:[`Multiplica la primera por ${a2} y la segunda por ${a1}:`,
-         `${a1*a2}x ${sgx(b1*a2)}y = ${c1*a2}`,
-         `${a1*a2}x ${sgx(b2*a1)}y = ${c2*a1}`,
+         `${a1*a2}x ${sg(b1*a2)}y = ${c1*a2}`,
+         `${a1*a2}x ${sg(b2*a1)}y = ${c2*a1}`,
          `Resta: ${b1*a2 - b2*a1}y = ${c1*a2 - c2*a1}`,
          `y = ${y}`,
-         `Sustituye en la primera: ${a1}x ${sgx(b1)}(${y}) = ${c1} → x = ${x}`]});
+         `Sustituye en la primera: ${a1}x ${sg(b1)}(${y}) = ${c1} → x = ${x}`]});
 }},
 
 {t:"Ecuaciones de segundo grado", hacer(){
@@ -1649,7 +1818,7 @@ const GEN = [
     ok:`${r1} y ${r2}`, malos:[`${-r1} y ${-r2}`,`${r1} y ${-r2}`,`${r1+1} y ${r2-1}`,`${r1*2} y ${r2}`],
     key:"Busca dos números que sumados den " + (-b) + " y multiplicados den " + c + ".",
     dev:[`x²${sg(b)}x${sg(c)} = 0`,
-         `Factoriza: (x${sgx(-r1)})(x${sgx(-r2)}) = 0`,
+         `Factoriza: (x${sg(-r1)})(x${sg(-r2)}) = 0`,
          `x = ${r1} o x = ${r2}`,
          `Verifica con la suma: ${r1} + ${r2} = ${r1+r2} = −(${b}) ✓`]});
 }},
@@ -1657,11 +1826,11 @@ const GEN = [
 {t:"Productos notables", hacer(){
   const a = ri(2,7), b = nz(-9,9);
   return reactivo({t:"Productos notables",
-    q:`Desarrolla (${coef(a)}x${sgx(b)})²`,
+    q:`Desarrolla (${coef(a)}x${sg(b)})²`,
     ok:`${a*a}x²${sg(2*a*b)}x${sg(b*b)}`,
     malos:[`${a*a}x²${sg(b*b)}`,`${a*a}x²${sg(a*b)}x${sg(b*b)}`,`${a}x²${sg(2*a*b)}x${sg(b*b)}`,`${a*a}x²${sg(2*a*b)}x${sg(-b*b)}`],
     key:"Binomio al cuadrado: primero al cuadrado, más el doble producto, más el segundo al cuadrado. El doble producto es lo que se olvida.",
-    dev:[`(${coef(a)}x${sgx(b)})² = (${coef(a)}x)² + 2(${coef(a)}x)(${b}) + (${b})²`,
+    dev:[`(${coef(a)}x${sg(b)})² = (${coef(a)}x)² + 2(${coef(a)}x)(${b}) + (${b})²`,
          `= ${a*a}x²${sg(2*a*b)}x${sg(b*b)}`]});
 }},
 
@@ -1680,19 +1849,19 @@ const GEN = [
   const a = nz(-9,9), b = nz(-9,9);
   if(a === b || a === -b) return null;
   return reactivo({t:"Fracciones algebraicas",
-    q:`Simplifica (x²${sg(-(a+b))}x${sg(a*b)}) / (x${sgx(-a)}), con x ≠ ${a}`,
-    ok:`x${sgx(-b)}`, malos:[`x${sgx(b)}`,`x${sgx(-a)}`,`x²${sgx(-b)}`,`x${sgx(-a-b)}`],
+    q:`Simplifica (x²${sg(-(a+b))}x${sg(a*b)}) / (x${sg(-a)}), con x ≠ ${a}`,
+    ok:`x${sg(-b)}`, malos:[`x${sg(b)}`,`x${sg(-a)}`,`x²${sg(-b)}`,`x${sg(-a-b)}`],
     key:"Factoriza el numerador y cancela el factor que se repite.",
-    dev:[`x²${sg(-(a+b))}x${sg(a*b)} = (x${sgx(-a)})(x${sgx(-b)})`,
-         `Cancela (x${sgx(-a)}) arriba y abajo`,
-         `Queda x${sgx(-b)}`]});
+    dev:[`x²${sg(-(a+b))}x${sg(a*b)} = (x${sg(-a)})(x${sg(-b)})`,
+         `Cancela (x${sg(-a)}) arriba y abajo`,
+         `Queda x${sg(-b)}`]});
 }},
 
 {t:"Leyes de los exponentes", hacer(){
   const a = ri(2,6), m = ri(3,8), n = ri(2,m-1);
   return reactivo({t:"Leyes de los exponentes",
-    q:`Simplifica (${a}x^${m} · ${a}x^${n}) / (${a}x^${n})`,
-    ok:`${a}x^${m}`, malos:[`${a}x^${m+n}`,`${a*a}x^${m}`,`${a}x^${m-n}`,`x^${m}`],
+    q:`Simplifica (${a}${pot("x",m)} · ${a}${pot("x",n)}) / (${a}${pot("x",n)})`,
+    ok:`${a}${pot("x",m)}`, malos:[`${a}${pot("x",m+n)}`,`${a*a}${pot("x",m)}`,`${a}${pot("x",m-n)}`,`${pot("x",m)}`],
     key:"Al multiplicar potencias de la misma base se suman los exponentes; al dividir se restan.",
     dev:[`Arriba: ${a}·${a} = ${a*a} y x^${m}·x^${n} = x^${m+n}`,
          `(${a*a}x^${m+n}) / (${a}x^${n})`,
@@ -1730,12 +1899,12 @@ const GEN = [
 {t:"Logaritmos", hacer(){
   const b = elige([2,3,5]), m = ri(2,6), k = ri(1,4);
   return reactivo({t:"Logaritmos",
-    q:`Si ${b}^(x${sgx(k)}) = ${Math.pow(b,m)}, entonces x vale:`,
+    q:`Si ${b}${sup("(x" + sgt(k) + ")")} = ${Math.pow(b,m)}, entonces x vale:`,
     ok:`${m-k}`, malos:[`${m}`,`${m+k}`,`${Math.pow(b,m)}`,`${m-k+1}`],
     key:"Iguala las bases: si las bases son iguales, los exponentes son iguales.",
     dev:[`${Math.pow(b,m)} = ${b}^${m}`,
-         `${b}^(x${sgx(k)}) = ${b}^${m}`,
-         `x ${sgx(k)} = ${m}`,
+         `${b}^(x${sg(k)}) = ${b}^${m}`,
+         `x ${sg(k)} = ${m}`,
          `x = ${m-k}`]});
 }},
 
@@ -1744,9 +1913,9 @@ const GEN = [
   let c = 1; for(let i=0;i<k;i++) c = c*(n-i)/(i+1);
   const val = c * Math.pow(b,k);
   return reactivo({t:"Binomio de Newton",
-    q:`El coeficiente del término con x^${n-k} en (x + ${b})^${n} es:`,
+    q:`El coeficiente del término con ${pot("x",n-k)} en (x + ${b})${sup(n)} es:`,
     ok:`${val}`, malos:[`${c}`,`${Math.pow(b,k)}`,`${val*b}`,`${c*k}`],
-    key:`Término general: C(n,k)·x^(n−k)·b^k. Hay que elevar el ${b} también, no solo tomar el combinatorio.`,
+    key:`El término general es C(n,k) por x elevado a (n−k) por b elevado a k. Hay que elevar el ${b} también, no solo tomar el combinatorio.`,
     dev:[`C(${n},${k}) = ${c}`,
          `El término es C(${n},${k})·x^${n-k}·${b}^${k}`,
          `${b}^${k} = ${Math.pow(b,k)}`,
@@ -1772,7 +1941,7 @@ const GEN = [
   return reactivo({t:"Progresión geométrica",
     q:`Si el primer término de una progresión geométrica es ${a1} y la razón es ${r}, ¿cuánto vale el término ${n}?`,
     ok:`${an}`, malos:[`${a1*Math.pow(r,n)}`,`${a1*r*n}`,`${an*r}`,`${a1+(n-1)*r}`],
-    key:`Término general: aₙ = a₁·r^(n−1), con exponente n−1, no n.`,
+    key:`Término general: aₙ = a₁·rⁿ⁻¹, con exponente n−1, no n.`,
     dev:[`aₙ = a₁ · r^(n−1)`,
          `a${n} = ${a1} · ${r}^${n-1}`,
          `${r}^${n-1} = ${Math.pow(r,n-1)}`,
@@ -1836,16 +2005,16 @@ const GEN = [
   const h = nz(-6,6), k = nz(-6,6), r = ri(2,9);
   return reactivo({t:"Circunferencia",
     q:`La ecuación ordinaria de la circunferencia con centro (${h}, ${k}) y radio ${r} es:`,
-    ok:`(x${sgx(-h)})² + (y${sgx(-k)})² = ${r*r}`,
-    malos:[`(x${sgx(h)})² + (y${sgx(k)})² = ${r*r}`,
-           `(x${sgx(-h)})² + (y${sgx(-k)})² = ${r}`,
-           `(x${sgx(-k)})² + (y${sgx(-h)})² = ${r*r}`,
-           `(x${sgx(h)})² + (y${sgx(-k)})² = ${r*r}`],
+    ok:`(x${sg(-h)})² + (y${sg(-k)})² = ${r*r}`,
+    malos:[`(x${sg(h)})² + (y${sg(k)})² = ${r*r}`,
+           `(x${sg(-h)})² + (y${sg(-k)})² = ${r}`,
+           `(x${sg(-k)})² + (y${sg(-h)})² = ${r*r}`,
+           `(x${sg(h)})² + (y${sg(-k)})² = ${r*r}`],
     key:"En la ecuación los signos del centro van invertidos, y el lado derecho es r², no r.",
     dev:[`Forma ordinaria: (x − h)² + (y − k)² = r²`,
          `h = ${h}, k = ${k}, r = ${r}`,
          `(x − (${h}))² + (y − (${k}))² = ${r}²`,
-         `(x${sgx(-h)})² + (y${sgx(-k)})² = ${r*r}`]});
+         `(x${sg(-h)})² + (y${sg(-k)})² = ${r*r}`]});
 }},
 
 {t:"Parábola", hacer(){
@@ -1961,9 +2130,9 @@ const GEN = [
 {t:"Cálculo diferencial", solo:"IPN", hacer(){
   const a = ri(2,9), n = ri(2,5), b = ri(2,9), c = ri(1,9);
   return reactivo({t:"Cálculo diferencial", solo:"IPN",
-    q:`La derivada de f(x) = ${a}x^${n} ${sgx(b)}x ${sgx(c)} es:`,
-    ok:`${a*n}x^${n-1} + ${b}`,
-    malos:[`${a*n}x^${n} + ${b}`,`${a}x^${n-1} + ${b}`,`${a*n}x^${n-1} + ${b} + ${c}`,`${a*n}x^${n-1}`],
+    q:`La derivada de f(x) = ${a}${pot("x",n)}${sg(b)}x${sg(c)} es:`,
+    ok:`${a*n}${pot("x",n-1)} + ${b}`,
+    malos:[`${a*n}${pot("x",n)} + ${b}`,`${a}${pot("x",n-1)} + ${b}`,`${a*n}${pot("x",n-1)} + ${b} + ${c}`,`${a*n}${pot("x",n-1)}`],
     key:"Regla de la potencia: baja el exponente como factor y réstale uno. La constante se deriva a cero.",
     dev:[`d/dx(${a}x^${n}) = ${a}·${n}·x^${n-1} = ${a*n}x^${n-1}`,
          `d/dx(${b}x) = ${b}`,
@@ -1974,9 +2143,12 @@ const GEN = [
 {t:"Cálculo integral", solo:"IPN", hacer(){
   const n = ri(1,5), a = (n+1)*ri(1,4);
   return reactivo({t:"Cálculo integral", solo:"IPN",
-    q:`El resultado de ∫ ${a}x^${n} dx es:`,
-    ok:`${a/(n+1)}x^${n+1} + C`,
-    malos:[`${a*n}x^${n-1} + C`,`${a}x^${n+1} + C`,`${a/(n+1)}x^${n} + C`,`${a*(n+1)}x^${n+1} + C`],
+    q:`El resultado de ∫ ${coef(a)}${pot("x",n)} dx es:`,
+    ok:`${coef(a/(n+1))}${pot("x",n+1)} + C`,
+    malos:[`${coef(a)}${pot("x",n+1)} + C`,
+           `${coef(a/(n+1))}${pot("x",n)} + C`,
+           `${coef(a*(n+1))}${pot("x",n+1)} + C`,
+           `${coef(a/(n+1))}${pot("x",n+1)}`],
     key:"Integral de una potencia: sube el exponente en uno y divide entre el nuevo exponente. Y nunca olvides la constante.",
     dev:[`∫ xⁿ dx = x^(n+1)/(n+1) + C`,
          `∫ ${a}x^${n} dx = ${a}·x^${n+1}/${n+1} + C`,
@@ -2200,6 +2372,42 @@ function pintarMemoria(){
   }
 }
 
+/* ===================== NOTACIÓN IMPRESA =====================
+   El procedimiento se escribe en notación de teclado (x^2, raiz3, pi)
+   porque es cómoda de teclear y de revisar en el código. Esto la
+   convierte a notación impresa justo antes de mostrarla, así que el
+   banco se escribe de una forma y se lee de otra.
+
+   Los superíndices van como <sup> y no como carácter Unicode: no toda
+   monoespaciada trae ⁴⁵⁶⁷⁸⁹ ni ⁽ ⁾, y cuando falta el glifo el
+   navegador cambia de tipografía y ahí sí se rompe la alineación.
+   Con line-height:0 el superíndice no separa los renglones.
+
+   Entra texto YA escapado, así que ≤ y ≥ se buscan como &lt;= y &gt;=.
+============================================================ */
+function mate(s){
+  return s
+    /* comparadores primero, mientras siguen escapados */
+    .replace(/&lt;=/g, "≤").replace(/&gt;=/g, "≥").replace(/!=/g, "≠")
+    /* la multiplicación va ANTES que los superíndices: si no, el
+       <sup> se mete en medio y el patrón «dígito x dígito» ya no casa */
+    .replace(/(\w|\))\s+x\s+(?=[\d(√])/g, "$1 × ")
+    /* raíz: sin \b al inicio, porque suele venir pegada a un número (2raiz3) */
+    .replace(/raiz\s*\(([^)]*)\)/g, "√($1)")
+    .replace(/raiz\s*(\d+)/g, "√$1")
+    .replace(/raiz/g, "√")
+    .replace(/(\d)\s*pi\b/g, "$1π")
+    .replace(/\bpi\b/g, "π")
+    /* exponentes */
+    .replace(/\^\(([^)]+)\)/g, "<sup>($1)</sup>")
+    .replace(/\^(−?\w+)/g, "<sup>$1</sup>")
+    /* el guion de teclado se vuelve signo menos solo cuando hace de
+       signo: después de un operador, un paréntesis o un espacio. El
+       guion de palabra (obrero-días) se queda como está. */
+    .replace(/(\s)-(?=\s)/g, "$1−")
+    .replace(/(^|[\s=(,≤≥≠+×])-(?=[\w(√])/g, "$1−");
+}
+
 function paintCover(){
   $("modos").innerHTML = "";
   [["practica","Práctica"],["simulacro","Simulacro completo"],["reto","Reto CONAMAT"]].forEach(([k,txt])=>
@@ -2211,7 +2419,7 @@ function paintCover(){
   $("opcReto").classList.toggle("hidden", !reto);
   $("opcAjustes").classList.toggle("hidden", reto);
   $("start").textContent = sim ? "Iniciar simulacro " + inst + " · 3 horas"
-    : reto ? "Empezar reto · " + RETOS.length + " problemas" : "Empezar";
+    : reto ? "Empezar reto · " + Math.min(RETOS_POR_RONDA, RETOS.length) + " problemas" : "Empezar";
   $("start").disabled = false;
 
   $("ajustes").innerHTML = "";
@@ -2330,6 +2538,19 @@ function armarSimulacro(){
   return out;
 }
 
+/* Cuántos problemas trae una ronda de reto. Si el banco tuviera menos,
+   se sirven los que haya. */
+const RETOS_POR_RONDA = 6;
+
+/* Antes esto servía RETOS.slice(): todos los que existieran, siempre en
+   el mismo orden. Ahora escoge una ronda, empezando por los que no te
+   han tocado, igual que el resto del simulador. */
+function armarReto(){
+  rnd = Math.random;
+  const orden = porFrescura(RETOS.map(q => [q])).flat();
+  return orden.slice(0, Math.min(RETOS_POR_RONDA, orden.length));
+}
+
 function armarPractica(){
   rnd = Math.random;
   generar(POR_GENERADOR);
@@ -2347,7 +2568,7 @@ function revolver(q){
 
 /* ===================== EXAMEN ===================== */
 function start(list){
-  if(modo !== "reto") marcarVistos(list);
+  marcarVistos(list);
   pool = barajar ? list.map(revolver) : list.slice();
   idx = 0; hits = 0; errores = []; answered = false;
   resp = new Array(pool.length).fill(null); marcas = new Set();
@@ -2392,7 +2613,12 @@ function render(){
   $("fill").style.width = (idx / pool.length * 100) + "%";
   $("mat").textContent = q.s;
   $("tema").textContent = q.t;
-  $("qtext").textContent = q.q;
+  /* En reactivos de procedimiento la pregunta también se compone: hay
+     dos del banco escritas con notación de teclado. En los de prosa se
+     deja el texto tal cual, para no tocar guiones ni comparadores que
+     ahí significan otra cosa. */
+  if(q.mono) $("qtext").innerHTML = mate(esc(q.q));
+  else $("qtext").textContent = q.q;
   $("fb").innerHTML = "";
   $("opts").innerHTML = "";
 
@@ -2409,7 +2635,8 @@ function render(){
     b.className = "opt" + (q.tri ? " tri" : "") + (sim && resp[idx] === i ? " pick" : "");
     b.type = "button";
     b.innerHTML = '<span class="bub">' + LETRAS[i] + '</span><span class="otxt"></span>';
-    b.querySelector(".otxt").textContent = txt;
+    if(q.mono) b.querySelector(".otxt").innerHTML = mate(esc(txt));
+    else b.querySelector(".otxt").textContent = txt;
     b.onclick = ()=> sim ? elegir(i) : answer(i);
     $("opts").appendChild(b);
   });
@@ -2450,7 +2677,7 @@ function answer(i){
   html += '<p class="key">' + esc(q.key) + '</p>';
   if(!ok && q.dev){
     html += '<p class="devlabel">' + (q.mono ? "Procedimiento" : "Para recordarlo") + '</p>';
-    html += '<ol class="dev' + (q.mono ? " mono" : "") + '">' + q.dev.map(d=>"<li>"+esc(d)+"</li>").join("") + '</ol>';
+    html += '<ol class="dev' + (q.mono ? " mono" : "") + '">' + q.dev.map(d=>"<li>"+mate(esc(d))+"</li>").join("") + '</ol>';
   }
   html += '<button class="next" id="next">' + (idx+1 < pool.length ? "Siguiente pregunta" : "Ver resultado") + '</button>';
   html += '<p class="hint">Atajos: teclas 1–' + q.o.length + ' para responder, Enter para avanzar.</p>';
@@ -2579,7 +2806,7 @@ $("start").onclick = ()=>{
     start(armarSimulacro());
   } else if(modo === "reto"){
     rnd = Math.random;
-    start(RETOS.slice());
+    start(armarReto());
   } else {
     start(armarPractica());
   }
