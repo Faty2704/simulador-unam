@@ -1,7 +1,7 @@
 /* Service worker mínimo: cachea el simulador para que abra sin internet
    después de la primera visita. No guarda progreso del examen —
    eso es intencional, ver la nota en el propio simulador. */
-const CACHE = "simulador-unam-v8";
+const CACHE = "simulador-unam-v12";
 const ARCHIVOS = ["./", "./simulador-unam.html", "./manifest.json",
                    "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png"];
 

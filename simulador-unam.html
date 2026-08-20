@@ -73,6 +73,7 @@
   .chip:hover{border-color:var(--azul)}
   .len{display:flex;flex-wrap:wrap;gap:8px}
   .count{font-family:var(--sans);font-size:13px;color:var(--gris);margin-top:12px}
+  .version{font-family:var(--mono);font-size:11px;color:var(--gris);margin-top:10px;letter-spacing:.02em}
   .liga{font:inherit;color:var(--tinta);background:none;border:0;padding:0;
         text-decoration:underline;text-underline-offset:3px;cursor:pointer}
   .liga:hover{opacity:.65}
@@ -256,10 +257,11 @@
 
 <!-- ============ PORTADA ============ -->
 <section id="cover" class="sheet cover">
-  <p class="eyebrow">Simulador de examen · 9 materias</p>
+  <p class="eyebrow">Simulador de examen · UNAM e IPN</p>
   <h1>Hoja de<em>respuestas</em></h1>
   <div class="rule"></div>
-  <p class="lede">Dos modos: práctica, donde cada error te devuelve el procedimiento completo o una idea corta para memorizar, y simulacro, con los 120 reactivos ponderados como el examen real y tres horas de reloj.</p>
+  <p class="lede">Tres modos: práctica, donde cada error te devuelve el procedimiento completo o una idea corta para memorizar; simulacro, con los reactivos ponderados como el examen real y tres horas de reloj; y reto, con problemas de concurso por encima del nivel del examen.</p>
+  <p class="version" id="version"></p>
 
   <div class="block">
     <h2>Modo</h2>
@@ -1608,6 +1610,92 @@ const BANK = [
       "Suma de los 9 restantes:  9 x 16 = 144",
       "El eliminado es la diferencia:  150 - 144 = 6",
       "Tiene sentido: al quitar un numero por debajo del promedio, el promedio sube."]}
+,
+
+/* ---------------- HISTORIA DE MÉXICO · siglo XIX ----------------
+   El banco tenía un reactivo para toda la guerra con Estados Unidos y
+   ninguno para el periodo entre la Independencia y la Reforma. Este
+   bloque cubre esa franja, que es de las más preguntadas. */
+
+{s:"Historia de México",t:"Guerra de los Polkos",q:"La Guerra de los Polkos (1847) fue:",o:["Una batalla contra el ejército estadounidense en Veracruz","Una sublevación de batallones de la Guardia Nacional contra el gobierno de Gómez Farías, en plena invasión estadounidense","Un levantamiento indígena en Yucatán contra los hacendados","Una rebelión de militares porfiristas contra Madero"],a:1,
+ key:"Fue una guerra de mexicanos contra mexicanos mientras el país estaba siendo invadido. Ese es el punto que se pregunta.",
+ dev:["Estalló el 27 de febrero de 1847 en la Ciudad de México.","La encabezó el general Matías de la Peña Barragán.","El gobierno atacado era el del vicepresidente Valentín Gómez Farías, encargado del Ejecutivo.","Sucedió mientras el ejército de Winfield Scott se preparaba para tomar Veracruz."]},
+
+{s:"Historia de México",t:"Guerra de los Polkos",q:"¿Cuál fue la causa inmediata de la rebelión de los Polkos?",o:["La firma del Tratado de Guadalupe Hidalgo","La ley del 11 de enero de 1847, que autorizaba disponer de bienes del clero para financiar la guerra","La anexión de Texas por Estados Unidos","La promulgación de la Constitución de 1857"],a:1,
+ key:"La ley permitía hipotecar o vender bienes eclesiásticos hasta por 15 millones de pesos. El clero y las clases acomodadas reaccionaron con las armas.",
+ dev:["El gobierno no tenía con qué sostener la guerra contra la invasión.","La Iglesia era la única institución con recursos suficientes.","La ley del 11 de enero de 1847 autorizó reunir hasta 15 millones de pesos con bienes del clero.","El clero financió y alentó la sublevación de los batallones."]},
+
+{s:"Historia de México",t:"Guerra de los Polkos",q:"El nombre de «polkos» dado a los batallones sublevados se explica porque:",o:["Provenían de Polonia","Sus oficiales eran aficionados a bailar la polka, y además se les acusaba de simpatizar con el presidente Polk","Peleaban con lanzas llamadas polkas","Los dirigía un general de apellido Polko"],a:1,
+ key:"El apodo tiene doble filo: por el baile de moda entre los jóvenes acomodados que formaban los batallones, y como acusación de estar favoreciendo al presidente Polk.",
+ dev:["Los batallones se formaron con jóvenes de familias ricas de la capital.","La polka era el baile de moda en sus fiestas.","La segunda lectura era una acusación: al rebelarse, favorecían al invasor.","James K. Polk era el presidente estadounidense que impulsó la guerra."]},
+
+{s:"Historia de México",t:"Guerra de los Polkos",q:"La consecuencia militar más grave de la rebelión de los Polkos fue:",o:["La pérdida de la batalla de la Angostura","Que Veracruz no recibiera los refuerzos ni los recursos que necesitaba para resistir el desembarco estadounidense","La rendición inmediata de la Ciudad de México","La entrada de Francia en la guerra"],a:1,
+ key:"Los batallones que debían marchar a Veracruz se quedaron combatiendo en la capital. El puerto cayó sin el apoyo que esperaba.",
+ dev:["Gómez Farías había ordenado a la Guardia Nacional marchar a Veracruz.","Los batallones se sublevaron en vez de salir.","La capital se volvió campo de batalla entre mexicanos durante semanas.","Scott sitió Veracruz desde el 9 de marzo de 1847 y el puerto cayó."]},
+
+{s:"Historia de México",t:"Guerra de los Polkos",q:"¿Cómo terminó la rebelión de los Polkos?",o:["Con la victoria de Gómez Farías y el fusilamiento de los sublevados","Con el regreso de Santa Anna, que derogó la ley del 11 de enero y desplazó a Gómez Farías","Con la intervención del ejército estadounidense","Con la firma de la Constitución de 1824"],a:1,
+ key:"Santa Anna regresó de la Angostura, dio marcha atrás a la ley y sacó a Gómez Farías. Los sublevados consiguieron lo que pedían.",
+ dev:["Santa Anna volvió tras la batalla de la Angostura (22 y 23 de febrero de 1847).","El 29 de marzo derogó la ley del 11 de enero.","Gómez Farías dejó el cargo y se suprimió la vicepresidencia.","Pedro María de Anaya asumió la presidencia en abril de 1847."]},
+
+{s:"Historia de México",t:"Guerra con Estados Unidos",q:"El detonante directo de la guerra entre México y Estados Unidos (1846-1848) fue:",o:["La venta de La Mesilla","La anexión de Texas a Estados Unidos y la disputa por la frontera del río Bravo","El bloqueo francés de Veracruz","La expulsión de los españoles"],a:1,
+ key:"Estados Unidos anexó Texas en 1845 y sostuvo que la frontera era el río Bravo; México la fijaba en el río Nueces. El choque en esa franja fue el pretexto.",
+ dev:["Texas se había separado de México en 1836.","Estados Unidos la anexó formalmente en 1845.","La franja entre el Nueces y el Bravo quedó en disputa.","Un enfrentamiento ahí dio a Polk el argumento para declarar la guerra en 1846."]},
+
+{s:"Historia de México",t:"Guerra con Estados Unidos",q:"La batalla de la Angostura (febrero de 1847) es recordada porque:",o:["México perdió toda su artillería","El ejército mexicano tenía ventaja y Santa Anna ordenó la retirada, desperdiciando la posición","Fue la última batalla de la guerra","La ganó el general Winfield Scott"],a:1,
+ key:"Se libró cerca de Saltillo contra las fuerzas de Taylor. La retirada de Santa Anna con la batalla no perdida es el punto que se pregunta.",
+ dev:["Se combatió el 22 y 23 de febrero de 1847 en Coahuila.","El adversario era el ejército de Zachary Taylor.","Santa Anna ordenó retirarse pese a que la posición no estaba perdida.","Regresó a la capital, donde encontró la rebelión de los Polkos."]},
+
+{s:"Historia de México",t:"Guerra con Estados Unidos",q:"Los Niños Héroes son recordados por su participación en la defensa de:",o:["El puerto de Veracruz","El Castillo de Chapultepec, en septiembre de 1847","La ciudad de Monterrey","El fuerte de San Juan de Ulúa"],a:1,
+ key:"Chapultepec cayó el 13 de septiembre de 1847; al día siguiente el ejército estadounidense entró a la Ciudad de México.",
+ dev:["Chapultepec albergaba el Colegio Militar.","El asalto ocurrió el 13 de septiembre de 1847.","Los cadetes que murieron ahí quedaron en la memoria nacional como los Niños Héroes.","La capital fue ocupada el 14 de septiembre."]},
+
+{s:"Historia de México",t:"México independiente",q:"El Plan de Iguala (1821) proponía como garantías:",o:["Reforma agraria, sufragio efectivo y municipio libre","Independencia, religión católica única y unión entre americanos y europeos","División de poderes, federalismo y educación laica","Libertad de cultos, desamortización y no reelección"],a:1,
+ key:"Son las Tres Garantías: independencia, religión y unión. De ahí el nombre del Ejército Trigarante.",
+ dev:["Lo firmaron Agustín de Iturbide y Vicente Guerrero.","Independencia: separarse de España.","Religión: la católica como única.","Unión: igualdad entre criollos, españoles y demás grupos.","Los Tratados de Córdoba, ese mismo año, confirmaron la independencia."]},
+
+{s:"Historia de México",t:"México independiente",q:"Las Siete Leyes de 1836 significaron para México el paso hacia:",o:["Una república federal","Una república centralista, con los estados convertidos en departamentos","Una monarquía con príncipe europeo","Un régimen parlamentario"],a:1,
+ key:"1824 es federalista; 1836 es centralista. Ese vaivén entre las dos formas de gobierno explica buena parte de la inestabilidad del siglo XIX.",
+ dev:["Las Siete Leyes sustituyeron a la Constitución de 1824.","Los estados perdieron su soberanía y pasaron a ser departamentos con gobernadores designados.","Crearon el Supremo Poder Conservador, por encima de los tres poderes.","El descontento centralista fue uno de los argumentos de la separación de Texas ese mismo año."]},
+
+{s:"Historia de México",t:"México independiente",q:"La llamada Guerra de los Pasteles (1838-1839) enfrentó a México con:",o:["España","Francia","Estados Unidos","Inglaterra"],a:1,
+ key:"Francia bloqueó Veracruz exigiendo el pago de daños a súbditos franceses, entre ellos un pastelero. De ahí el nombre.",
+ dev:["Comerciantes franceses reclamaron indemnización por pérdidas durante los desórdenes.","Francia bloqueó el puerto de Veracruz en 1838.","Santa Anna perdió una pierna en el combate y recuperó prestigio político.","México terminó pagando la indemnización exigida."]},
+
+{s:"Historia de México",t:"México independiente",q:"La venta de La Mesilla (1853) ocurrió durante el gobierno de:",o:["Benito Juárez","Antonio López de Santa Anna","Valentín Gómez Farías","Ignacio Comonfort"],a:1,
+ key:"Es la última cesión territorial a Estados Unidos, ya después del Tratado de Guadalupe Hidalgo, y la hizo Santa Anna en su último periodo.",
+ dev:["Se firmó en 1853, cinco años después del tratado que cerró la guerra.","Se cedió una franja del norte de Sonora y Chihuahua.","México recibió 10 millones de pesos.","El descontento por esta venta alimentó el Plan de Ayutla al año siguiente."]},
+
+{s:"Historia de México",t:"Reforma",q:"El Plan de Ayutla (1854) tenía como objetivo principal:",o:["Restaurar el imperio de Iturbide","Desconocer a Santa Anna y convocar un congreso constituyente","Expulsar a los franceses de Veracruz","Repartir las tierras de las haciendas"],a:1,
+ key:"Ayutla derriba a Santa Anna y abre el camino al Constituyente de 1856-1857. Es el arranque del periodo de Reforma.",
+ dev:["Lo proclamaron Juan Álvarez y Ignacio Comonfort en Guerrero.","Buscaba terminar con la dictadura de Santa Anna.","Triunfó en 1855 y Santa Anna salió del país.","El congreso que convocó produjo la Constitución de 1857."]},
+
+{s:"Historia de México",t:"Reforma",q:"La Ley Lerdo (1856) ordenaba:",o:["Suprimir los fueros eclesiástico y militar en tribunales civiles","Desamortizar los bienes de corporaciones civiles y eclesiásticas","Registrar los nacimientos y matrimonios ante el Estado","Establecer la educación laica y gratuita"],a:1,
+ key:"Cada ley de Reforma lleva el apellido de quien la impulsó: Juárez los fueros, Lerdo la desamortización, Iglesias los cobros parroquiales.",
+ dev:["Obligaba a las corporaciones a vender las tierras que no usaran directamente.","Su objetivo era mover al mercado propiedades inmovilizadas.","Afectó también a las tierras comunales de los pueblos indígenas.","Ese efecto no buscado fue una de las causas del descontento rural posterior."]},
+
+{s:"Historia de México",t:"Reforma",q:"La Guerra de Reforma (1858-1861) enfrentó a:",o:["México contra Francia","Liberales y conservadores por la vigencia de la Constitución de 1857","Centralistas y federalistas por la forma de gobierno","Realistas e insurgentes por la independencia"],a:1,
+ key:"También se le llama Guerra de Tres Años. Los conservadores desconocieron la Constitución de 1857 y hubo dos gobiernos paralelos.",
+ dev:["El Plan de Tacubaya desconoció la Constitución de 1857.","Juárez encabezó el gobierno liberal, itinerante, con capital en Veracruz.","Desde ahí expidió las Leyes de Reforma en 1859.","Los liberales triunfaron y Juárez entró a la capital en enero de 1861."]},
+
+{s:"Historia de México",t:"Intervención francesa",q:"El pretexto que usó Francia para intervenir militarmente en México en 1862 fue:",o:["La expulsión de misioneros franceses","La suspensión del pago de la deuda externa decretada por Juárez","El asesinato de un embajador francés","La firma del Tratado de Guadalupe Hidalgo"],a:1,
+ key:"Juárez suspendió pagos por dos años en 1861. España, Inglaterra y Francia enviaron tropas; solo Francia se quedó a invadir.",
+ dev:["En julio de 1861 Juárez decretó la suspensión de pagos de la deuda.","España, Inglaterra y Francia firmaron la Convención de Londres.","España e Inglaterra se retiraron tras negociar en La Soledad.","Francia continuó y buscó imponer una monarquía."]},
+
+{s:"Historia de México",t:"Porfiriato",q:"La frase «poca política y mucha administración» resume la estrategia de Díaz de:",o:["Repartir tierras a los campesinos","Privilegiar el orden y el crecimiento económico por encima de la vida política","Ampliar el sufragio y la libertad de prensa","Federalizar la educación"],a:1,
+ key:"Orden y progreso: estabilidad e inversión primero, participación política después. Ese «después» nunca llegó.",
+ dev:["Díaz gobernó de 1876 a 1911 con una sola interrupción.","Se tendieron más de 19 mil kilómetros de vías férreas.","La inversión extranjera creció, sobre todo en minería y petróleo.","El costo fue la concentración de la tierra y la supresión de la disidencia."]},
+
+{s:"Historia de México",t:"Revolución Mexicana",q:"El Plan de San Luis, proclamado por Francisco I. Madero en 1910, convocaba a:",o:["Repartir las haciendas entre los campesinos","Desconocer las elecciones y levantarse en armas el 20 de noviembre","Nacionalizar el petróleo","Restablecer la Constitución de 1857"],a:1,
+ key:"Su bandera era «sufragio efectivo, no reelección»: un plan político, no agrario. El reparto de tierras entra después, con el Plan de Ayala.",
+ dev:["Madero fue encarcelado durante las elecciones de 1910.","Escapó a San Antonio, Texas, y proclamó el plan.","Declaró nulas las elecciones y llamó a las armas el 20 de noviembre de 1910.","Díaz renunció en mayo de 1911."]},
+
+{s:"Historia de México",t:"Revolución Mexicana",q:"La Decena Trágica (febrero de 1913) culminó con:",o:["La renuncia de Porfirio Díaz","El golpe de Victoriano Huerta y el asesinato de Madero y Pino Suárez","La firma de los Tratados de Ciudad Juárez","La promulgación de la Constitución de 1917"],a:1,
+ key:"Diez días de combate en la capital que terminan con el presidente y el vicepresidente asesinados y Huerta en el poder.",
+ dev:["Empezó el 9 de febrero de 1913 con un alzamiento militar.","Huerta, encargado de defender al gobierno, pactó con los sublevados.","El Pacto de la Embajada se firmó con la mediación del embajador estadounidense Henry Lane Wilson.","Madero y Pino Suárez fueron asesinados el 22 de febrero."]},
+
+{s:"Historia de México",t:"Revolución Mexicana",q:"La Convención de Aguascalientes (1914) tuvo como resultado:",o:["La reconciliación de todas las facciones revolucionarias","La ruptura entre Carranza y los ejércitos de Villa y Zapata","La renuncia de Victoriano Huerta","La firma de la Constitución de 1917"],a:1,
+ key:"Se reunió para unificar a los vencedores de Huerta y consiguió lo contrario: dividirlos en dos bandos que siguieron peleando.",
+ dev:["Se convocó tras la derrota de Huerta para acordar el rumbo del país.","Villa y Zapata respaldaron el Plan de Ayala y nombraron presidente a Eulalio Gutiérrez.","Carranza desconoció los acuerdos y se trasladó a Veracruz.","La guerra siguió entre convencionistas y constitucionalistas."]}
 
 ];
 
@@ -1744,6 +1832,11 @@ const SUPS = {"0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶"
 const sup = e => String(e).split("").map(c => SUPS[c] || c).join("");
 /* Potencia ya formateada: x¹ se escribe x, y x⁰ se escribe 1 */
 const pot = (base, e) => e === 0 ? "1" : e === 1 ? base : base + sup(e);
+/* Subíndices, para las fórmulas químicas: C₆H₁₄ */
+const SUBS = {"0":"₀","1":"₁","2":"₂","3":"₃","4":"₄","5":"₅","6":"₆","7":"₇","8":"₈","9":"₉"};
+const sub = e => String(e).split("").map(c => SUBS[c] || c).join("");
+/* Redondeo para resultados de física y química, sin ceros de sobra */
+const red = (v, d) => { const f = Math.pow(10, d === undefined ? 2 : d); return Math.round(v*f)/f; };
 
 /* Ternas pitagóricas, para que raíces y distancias den exacto */
 const TERNAS = [[3,4,5],[6,8,10],[5,12,13],[8,15,17],[9,12,15],[7,24,25],[20,21,29],[9,40,41]];
@@ -1770,7 +1863,7 @@ function reactivo(o){
   }
   if(vistas.length < 4) return null;
   const ix = shuffle(vistas.map((_,i)=>i));
-  return { s: o.s || "Matemáticas", t: o.t, gen: true, solo: o.solo,
+  return { s: o.s || "Matemáticas", t: o.t, gen: true, modulo: o.modulo,
            q: impreso(o.q), o: ix.map(i=>vistas[i]), a: ix.indexOf(0),
            mono: o.mono !== false, key: o.key, dev: o.dev };
 }
@@ -2127,9 +2220,9 @@ const GEN = [
          `Mediana: el tercero de cinco = ${mediana}`]});
 }},
 
-{t:"Cálculo diferencial", solo:"IPN", hacer(){
+{t:"Cálculo diferencial", modulo:"calculo", hacer(){
   const a = ri(2,9), n = ri(2,5), b = ri(2,9), c = ri(1,9);
-  return reactivo({t:"Cálculo diferencial", solo:"IPN",
+  return reactivo({t:"Cálculo diferencial", modulo:"calculo",
     q:`La derivada de f(x) = ${a}${pot("x",n)}${sg(b)}x${sg(c)} es:`,
     ok:`${a*n}${pot("x",n-1)} + ${b}`,
     malos:[`${a*n}${pot("x",n)} + ${b}`,`${a}${pot("x",n-1)} + ${b}`,`${a*n}${pot("x",n-1)} + ${b} + ${c}`,`${a*n}${pot("x",n-1)}`],
@@ -2140,9 +2233,9 @@ const GEN = [
          `f'(x) = ${a*n}x^${n-1} + ${b}`]});
 }},
 
-{t:"Cálculo integral", solo:"IPN", hacer(){
+{t:"Cálculo integral", modulo:"calculo", hacer(){
   const n = ri(1,5), a = (n+1)*ri(1,4);
-  return reactivo({t:"Cálculo integral", solo:"IPN",
+  return reactivo({t:"Cálculo integral", modulo:"calculo",
     q:`El resultado de ∫ ${coef(a)}${pot("x",n)} dx es:`,
     ok:`${coef(a/(n+1))}${pot("x",n+1)} + C`,
     malos:[`${coef(a)}${pot("x",n+1)} + C`,
@@ -2153,6 +2246,349 @@ const GEN = [
     dev:[`∫ xⁿ dx = x^(n+1)/(n+1) + C`,
          `∫ ${a}x^${n} dx = ${a}·x^${n+1}/${n+1} + C`,
          `= ${a/(n+1)}x^${n+1} + C`]});
+}}
+,
+
+/* ---------------- FÍSICA ----------------
+   Se usa g = 10 m/s², como en las guías de las dos casas, y se dice en
+   el enunciado. Varios piden conversión de unidades o dos pasos: la
+   dificultad está en no poder sustituir directo en una fórmula. */
+
+{s:"Física", t:"Cinemática", hacer(){
+  const v = elige([10,15,20,25,30,40,50]), a = elige([1,2,3,4,5,6,8,10]);
+  const d = v*v/(2*a);
+  if(!Number.isInteger(d) || d < 8 || d > 400) return null;
+  const kmh = v*3.6;
+  return reactivo({s:"Física", t:"Cinemática",
+    q:`Un automóvil que viaja a ${kmh} km/h frena uniformemente y se detiene después de recorrer ${d} m. La magnitud de su desaceleración es:`,
+    ok:`${a} m/s²`, malos:[`${red(kmh*kmh/(2*d),2)} m/s²`,`${red(v*v/d,2)} m/s²`,`${red(v/ (2*d),3)} m/s²`,`${a*2} m/s²`],
+    key:`Primero convierte: ${kmh} km/h ÷ 3.6 = ${v} m/s. El distractor grande sale de meter los km/h directo en la fórmula.`,
+    dev:[`Convierte la velocidad:  ${kmh} km/h / 3.6 = ${v} m/s`,
+         `Usa v^2 = v0^2 + 2ad, con v = 0 al detenerse`,
+         `0 = ${v}^2 + 2a(${d})`,
+         `a = -${v*v} / ${2*d} = -${a} m/s^2`,
+         `La magnitud es ${a} m/s^2; el signo solo indica que frena.`]});
+}},
+
+{s:"Física", t:"Caída libre", hacer(){
+  const t = ri(2,5), h = 5*t*t, v = ri(8,25);
+  const x = v*t;
+  return reactivo({s:"Física", t:"Caída libre",
+    q:`Desde un risco de ${h} m de altura se lanza una piedra horizontalmente con rapidez de ${v} m/s. ¿A qué distancia horizontal del pie del risco cae? (g = 10 m/s²)`,
+    ok:`${x} m`, malos:[`${h} m`,`${v*Math.round(Math.sqrt(2*h/10)*2)} m`,`${red(v*Math.sqrt(h/10),1)} m`,`${x+v} m`],
+    key:`En tiro horizontal los dos movimientos son independientes: el tiempo lo fija la caída, y ese tiempo se usa en la horizontal.`,
+    dev:[`Vertical (caida libre):  h = (1/2) g t^2`,
+         `${h} = 5 t^2  ->  t^2 = ${t*t}  ->  t = ${t} s`,
+         `Horizontal (velocidad constante):  x = v t`,
+         `x = ${v} x ${t} = ${x} m`,
+         `La rapidez horizontal no cambia el tiempo de caida.`]});
+}},
+
+{s:"Física", t:"Tiro vertical", hacer(){
+  const v = elige([10,15,20,25,30,35,40,45,50]);
+  const h = v*v/20, t = v/10;
+  return reactivo({s:"Física", t:"Tiro vertical",
+    q:`Se lanza un objeto verticalmente hacia arriba con rapidez inicial de ${v} m/s. ¿Cuánto tiempo tarda en regresar al punto de lanzamiento? (g = 10 m/s²)`,
+    ok:`${2*t} s`, malos:[`${t} s`,`${h} s`,`${v} s`,`${4*t} s`],
+    key:`El tiempo de subida y el de bajada son iguales, así que el vuelo total es el doble del de subida. El distractor es dar solo la subida.`,
+    dev:[`En el punto mas alto la velocidad vale cero`,
+         `v = v0 - g t  ->  0 = ${v} - 10 t`,
+         `t de subida = ${t} s`,
+         `Por simetria, la bajada tarda lo mismo`,
+         `Tiempo total = 2 x ${t} = ${2*t} s`,
+         `De paso, la altura maxima seria v0^2/(2g) = ${h} m`]});
+}},
+
+{s:"Física", t:"Segunda ley de Newton", hacer(){
+  const m = elige([5,10,20]), mu = elige([0.2,0.3,0.4]);
+  const a = elige([2,3,4]);
+  const fr = mu*m*10, F = m*a + fr;
+  if(!Number.isInteger(F)) return null;
+  return reactivo({s:"Física", t:"Segunda ley de Newton",
+    q:`Sobre un bloque de ${m} kg apoyado en una superficie horizontal actúa una fuerza horizontal de ${F} N. Si el coeficiente de fricción es ${mu}, ¿cuál es la aceleración del bloque? (g = 10 m/s²)`,
+    ok:`${a} m/s²`, malos:[`${red(F/m,2)} m/s²`,`${red(fr/m,2)} m/s²`,`${red((F+fr)/m,2)} m/s²`,`${a+1} m/s²`],
+    key:`La fuerza neta es la aplicada menos la de fricción. Dividir F entre m sin restar la fricción es el error más común.`,
+    dev:[`Peso:  W = m g = ${m} x 10 = ${m*10} N`,
+         `Friccion:  f = mu N = ${mu} x ${m*10} = ${fr} N`,
+         `Fuerza neta:  Fn = ${F} - ${fr} = ${F-fr} N`,
+         `a = Fn / m = ${F-fr} / ${m} = ${a} m/s^2`]});
+}},
+
+{s:"Física", t:"Trabajo y energía", hacer(){
+  const m = elige([1,2,3,4,5,8,10,12,20]), h = elige([5,20,45,80,125]);
+  const v = Math.sqrt(2*10*h);
+  if(!Number.isInteger(v)) return null;
+  return reactivo({s:"Física", t:"Trabajo y energía",
+    q:`Un cuerpo de ${m} kg se deja caer desde ${h} m de altura. ¿Con qué rapidez llega al suelo? (g = 10 m/s², se desprecia la fricción)`,
+    ok:`${v} m/s`, malos:[`${2*v} m/s`,`${h} m/s`,`${red(v*m,0)} m/s`,`${red(Math.sqrt(10*h),1)} m/s`],
+    key:`Por conservación de energía la rapidez no depende de la masa. Si la masa te aparece en la respuesta, algo salió mal.`,
+    dev:[`Energia potencial arriba = energia cinetica abajo`,
+         `m g h = (1/2) m v^2`,
+         `La masa se cancela en los dos lados`,
+         `v = raiz(2 g h) = raiz(2 x 10 x ${h}) = raiz${2*10*h}`,
+         `v = ${v} m/s`,
+         `Por eso dos cuerpos de distinta masa llegan con la misma rapidez.`]});
+}},
+
+{s:"Física", t:"Potencia", hacer(){
+  const m = elige([20,50,60,80]), h = elige([3,5,6,10]), t = elige([4,5,10]);
+  const P = m*10*h/t;
+  if(!Number.isInteger(P)) return null;
+  return reactivo({s:"Física", t:"Potencia",
+    q:`Un motor eleva una carga de ${m} kg a una altura de ${h} m en ${t} s. La potencia desarrollada es: (g = 10 m/s²)`,
+    ok:`${P} W`, malos:[`${m*10*h} W`,`${red(m*h/t,1)} W`,`${red(m*10*t/h,0)} W`,`${P*2} W`],
+    key:`Potencia es trabajo entre tiempo. Dar solo el trabajo, sin dividir, es el distractor principal.`,
+    dev:[`Trabajo contra la gravedad:  W = m g h`,
+         `W = ${m} x 10 x ${h} = ${m*10*h} J`,
+         `Potencia:  P = W / t`,
+         `P = ${m*10*h} / ${t} = ${P} W`]});
+}},
+
+{s:"Física", t:"Cantidad de movimiento", hacer(){
+  const m1 = elige([2,3,4,6]), m2 = elige([2,4,6,8]), v1 = elige([4,6,8,10,12]);
+  const v = m1*v1/(m1+m2);
+  if(!Number.isInteger(v)) return null;
+  return reactivo({s:"Física", t:"Cantidad de movimiento",
+    q:`Un carro de ${m1} kg que se mueve a ${v1} m/s choca de frente con otro de ${m2} kg que está en reposo y quedan unidos. ¿Con qué rapidez se mueve el conjunto después del choque?`,
+    ok:`${v} m/s`, malos:[`${v1} m/s`,`${red(v1/2,2)} m/s`,`${red(m1*v1/m2,2)} m/s`,`${red(v1*m2/(m1+m2),2)} m/s`],
+    key:`La cantidad de movimiento total se conserva; en un choque donde quedan unidos, la masa final es la suma de las dos.`,
+    dev:[`Antes:  p = m1 v1 + m2 v2 = ${m1} x ${v1} + ${m2} x 0 = ${m1*v1} kg m/s`,
+         `Despues quedan unidos, la masa es ${m1} + ${m2} = ${m1+m2} kg`,
+         `p se conserva:  ${m1*v1} = ${m1+m2} x v`,
+         `v = ${m1*v1} / ${m1+m2} = ${v} m/s`,
+         `Ojo: la energia cinetica NO se conserva en este tipo de choque.`]});
+}},
+
+{s:"Física", t:"Presión hidrostática", hacer(){
+  const rho = elige([1000,800,1030,1360]), h = elige([2,3,5,10]);
+  const P = rho*10*h;
+  return reactivo({s:"Física", t:"Presión hidrostática",
+    q:`¿Cuál es la presión que ejerce una columna de ${h} m de un líquido de densidad ${rho} kg/m³ en su fondo? (g = 10 m/s²)`,
+    ok:`${P} Pa`, malos:[`${rho*h} Pa`,`${red(P/h,0)} Pa`,`${P*2} Pa`,`${rho*10} Pa`],
+    key:`P = ρgh. La presión no depende del área ni de la forma del recipiente, solo de la altura de la columna.`,
+    dev:[`P = densidad x g x altura`,
+         `P = ${rho} x 10 x ${h}`,
+         `P = ${P} Pa`,
+         `Un recipiente ancho y uno angosto con la misma altura dan la misma presion en el fondo.`]});
+}},
+
+{s:"Física", t:"Calorimetría", hacer(){
+  const m = elige([100,200,250,500]), dT = elige([10,20,40,50]);
+  const Q = m*dT;
+  return reactivo({s:"Física", t:"Calorimetría",
+    q:`¿Cuánto calor se necesita para elevar la temperatura de ${m} g de agua de 20 °C a ${20+dT} °C? (calor específico del agua = 1 cal/g·°C)`,
+    ok:`${Q} cal`, malos:[`${m*(20+dT)} cal`,`${red(Q/dT,0)} cal`,`${m+dT} cal`,`${Q*2} cal`],
+    key:`Q = m c ΔT. El ΔT es la diferencia de temperaturas, no la temperatura final. Ese es el error que cazan.`,
+    dev:[`ΔT = ${20+dT} - 20 = ${dT} grados C`,
+         `Q = m c ΔT`,
+         `Q = ${m} x 1 x ${dT}`,
+         `Q = ${Q} cal`]});
+}},
+
+{s:"Física", t:"Ley de Ohm", hacer(){
+  const r1 = elige([6,12,20,3,4]), r2 = elige([3,4,5,6,12]);
+  const rp = r1*r2/(r1+r2);
+  if(!Number.isInteger(rp) || r1===r2) return null;
+  const V = rp*elige([2,3,4]);
+  return reactivo({s:"Física", t:"Ley de Ohm",
+    q:`Dos resistencias de ${r1} Ω y ${r2} Ω se conectan en paralelo a una fuente de ${V} V. ¿Cuál es la corriente total que entrega la fuente?`,
+    ok:`${V/rp} A`, malos:[`${red(V/(r1+r2),2)} A`,`${red(V/r1,2)} A`,`${red(V*rp,0)} A`,`${red(V/r2,2)} A`],
+    key:`En paralelo la resistencia equivalente es menor que la más pequeña. Sumarlas como si fueran serie es el distractor.`,
+    dev:[`En paralelo:  1/Req = 1/R1 + 1/R2`,
+         `Req = (R1 x R2)/(R1 + R2) = (${r1} x ${r2})/(${r1+r2}) = ${rp} ohm`,
+         `Nota que ${rp} es menor que ${Math.min(r1,r2)}: asi debe ser en paralelo`,
+         `I = V / Req = ${V} / ${rp} = ${V/rp} A`]});
+}},
+
+{s:"Física", t:"Potencia eléctrica", hacer(){
+  const V = elige([110,120,127,220,12,24]), P = elige([60,100,120,220,240,440,600,1100,1320]);
+  const I = P/V;
+  if(Math.round(I*100)/100 !== I || I < 0.2) return null;
+  return reactivo({s:"Física", t:"Potencia eléctrica",
+    q:`Un aparato de ${P} W se conecta a ${V} V. ¿Qué corriente consume?`,
+    ok:`${I} A`, malos:[`${red(V/P,3)} A`,`${P*V} A`,`${red(I*2,2)} A`,`${red(P/(V*V),4)} A`],
+    key:`P = VI, así que I = P/V. Invertir la división da un número muy chico: si te sale menos de 1 A en un aparato grande, revisa.`,
+    dev:[`P = V x I`,
+         `I = P / V`,
+         `I = ${P} / ${V} = ${I} A`]});
+}},
+
+{s:"Física", t:"Ondas", hacer(){
+  const f = elige([50,100,200,400,500]), lam = elige([2,4,5,8,10]);
+  return reactivo({s:"Física", t:"Ondas",
+    q:`Una onda tiene una frecuencia de ${f} Hz y una longitud de onda de ${lam} m. ¿Cuál es su rapidez de propagación?`,
+    ok:`${f*lam} m/s`, malos:[`${red(f/lam,1)} m/s`,`${red(lam/f,4)} m/s`,`${f+lam} m/s`,`${f*lam*2} m/s`],
+    key:`v = λf. La frecuencia y la longitud de onda son inversamente proporcionales si la rapidez es fija.`,
+    dev:[`v = longitud de onda x frecuencia`,
+         `v = ${lam} x ${f}`,
+         `v = ${f*lam} m/s`,
+         `El periodo seria T = 1/f = ${red(1/f,4)} s`]});
+}},
+
+{s:"Física", t:"Óptica", hacer(){
+  const f = elige([6,10,12,15,18,20,24,30]), k = elige([2,3,4,5,6]);
+  const dob = f*k, di = 1/(1/f - 1/dob);
+  if(!Number.isInteger(di)) return null;
+  return reactivo({s:"Física", t:"Óptica",
+    q:`Un objeto se coloca a ${dob} cm de un espejo cóncavo de ${f} cm de distancia focal. ¿A qué distancia del espejo se forma la imagen?`,
+    ok:`${di} cm`, malos:[`${dob-f} cm`,`${dob+f} cm`,`${red(dob/f,2)} cm`,`${f} cm`],
+    key:`1/f = 1/do + 1/di. Restar las distancias en vez de los recíprocos es el error clásico.`,
+    dev:[`1/f = 1/do + 1/di`,
+         `1/di = 1/f - 1/do = 1/${f} - 1/${dob}`,
+         `Comun denominador ${dob}:  ${dob/f}/${dob} - 1/${dob} = ${dob/f-1}/${dob}`,
+         `di = ${dob}/${dob/f-1} = ${di} cm`,
+         `Como el objeto esta fuera del foco, la imagen es real e invertida.`]});
+}},
+
+/* ---------------- QUÍMICA ---------------- */
+
+{s:"Química", t:"Balanceo de ecuaciones", hacer(){
+  const n = ri(1,6);
+  const nom = ["metano","etano","propano","butano","pentano","hexano"][n-1];
+  const f = n === 1 ? "CH₄" : "C" + sub(n) + "H" + sub(2*n+2);
+  const impar = n % 2 === 1;
+  const c = impar ? [1,(3*n+1)/2,n,n+1] : [2,3*n+1,2*n,2*n+2];
+  const pon = k => k === 1 ? "" : k + " ";
+  return reactivo({s:"Química", t:"Balanceo de ecuaciones", mono:false,
+    q:`Al balancear la combustión completa del ${nom}, ${f} + O₂ → CO₂ + H₂O, el coeficiente del O₂ es:`,
+    ok:`${c[1]}`, malos:[`${c[2]}`,`${c[3]}`,`${c[1]+1}`,`${n}`],
+    key:`Balancea primero carbono, luego hidrógeno y deja el oxígeno al final, porque aparece en los dos productos.`,
+    dev:[`Ecuacion balanceada:  ${pon(c[0])}${f} + ${pon(c[1])}O2 -> ${pon(c[2])}CO2 + ${pon(c[3])}H2O`,
+         `Carbono: hay ${n} por molecula de ${nom}, van a ${c[2]} CO2`,
+         `Hidrogeno: hay ${2*n+2}, van a ${c[3]} H2O`,
+         `Oxigeno del lado derecho: ${2*c[2]} (de CO2) + ${c[3]} (de H2O) = ${2*c[2]+c[3]}`,
+         `Como el O2 trae 2 atomos:  ${2*c[2]+c[3]} / 2 = ${c[1]}`]});
+}},
+
+{s:"Química", t:"Masa molar", hacer(){
+  const cs = [["H₂SO₄",98,"ácido sulfúrico"],["Ca(OH)₂",74,"hidróxido de calcio"],
+              ["CaCO₃",100,"carbonato de calcio"],["NaHCO₃",84,"bicarbonato de sodio"],
+              ["HNO₃",63,"ácido nítrico"],["NaOH",40,"hidróxido de sodio"],
+              ["H₃PO₄",98,"ácido fosfórico"],["Al₂O₃",102,"óxido de aluminio"],
+              ["C₆H₁₂O₆",180,"glucosa"],["NH₃",17,"amoniaco"],["CuSO₄",160,"sulfato de cobre(II)"]];
+  const [f,M,nom] = elige(cs);
+  const g = M*elige([2,3,4,5]);
+  return reactivo({s:"Química", t:"Masa molar", mono:false,
+    q:`¿Cuántos moles hay en ${g} g de ${nom} (${f}), si su masa molar es ${M} g/mol?`,
+    ok:`${g/M} mol`, malos:[`${red(M/g,3)} mol`,`${g*M} mol`,`${red(g/M+1,0)} mol`,`${M} mol`],
+    key:`n = m / M. Si divides al revés obtienes un número menor que 1, que casi nunca es la respuesta cuando la masa supera a la masa molar.`,
+    dev:[`n = masa / masa molar`,
+         `n = ${g} g / ${M} g/mol`,
+         `n = ${g/M} mol`]});
+}},
+
+{s:"Química", t:"Molaridad", hacer(){
+  const M = elige([40,58.5,98,100,84,63]), n = elige([0.5,1,2,3]);
+  const V = elige([0.5,2,4,0.25]);
+  const c = n/V;
+  const g = M*n;
+  if(Math.round(c*100)/100 !== c) return null;
+  return reactivo({s:"Química", t:"Molaridad", mono:false,
+    q:`Se disuelven ${red(g,2)} g de un soluto de masa molar ${M} g/mol en agua hasta completar ${V} L de disolución. ¿Cuál es su concentración molar?`,
+    ok:`${c} M`, malos:[`${red(g/V,2)} M`,`${red(n,2)} M`,`${red(V/n,3)} M`,`${red(c*2,2)} M`],
+    key:`Molaridad son moles por litro, no gramos por litro. Hay que convertir la masa a moles primero.`,
+    dev:[`Convierte la masa a moles:  n = ${red(g,2)} / ${M} = ${n} mol`,
+         `Molaridad = moles de soluto / litros de disolucion`,
+         `M = ${n} / ${V} = ${c} mol/L`]});
+}},
+
+{s:"Química", t:"Dilución", hacer(){
+  const M1 = elige([2,4,5,6,10]), V1 = elige([50,100,200,250]);
+  const M2 = elige([0.5,1,2]);
+  const V2 = M1*V1/M2;
+  if(M2 >= M1 || !Number.isInteger(V2)) return null;
+  return reactivo({s:"Química", t:"Dilución", mono:false,
+    q:`¿Qué volumen final debe tener una disolución preparada al diluir ${V1} mL de disolución ${M1} M hasta una concentración de ${M2} M?`,
+    ok:`${V2} mL`, malos:[`${V2-V1} mL`,`${red(V1*M2/M1,1)} mL`,`${V1+V1} mL`,`${red(V2/2,0)} mL`],
+    key:`M₁V₁ = M₂V₂ da el volumen FINAL. Si preguntaran cuánta agua agregar, habría que restarle el volumen inicial.`,
+    dev:[`M1 V1 = M2 V2`,
+         `${M1} x ${V1} = ${M2} x V2`,
+         `V2 = ${M1*V1} / ${M2} = ${V2} mL`,
+         `El agua que se agrega seria ${V2} - ${V1} = ${V2-V1} mL, que es el distractor.`]});
+}},
+
+{s:"Química", t:"Partículas subatómicas", hacer(){
+  const els = [["sodio","Na",11,23],["magnesio","Mg",12,24],["aluminio","Al",13,27],
+               ["cloro","Cl",17,35],["potasio","K",19,39],["calcio","Ca",20,40],
+               ["hierro","Fe",26,56],["azufre","S",16,32],["oxígeno","O",8,16]];
+  const [nom,sim,Z,A] = elige(els);
+  const carga = elige([1,2,-1,-2]);
+  const signo = carga > 0 ? "+" + (carga === 1 ? "" : carga) : "−" + (carga === -1 ? "" : Math.abs(carga));
+  const e = Z - carga;
+  return reactivo({s:"Química", t:"Partículas subatómicas", mono:false,
+    q:`El ion ${sim}${sup(signo)} tiene número atómico ${Z} y número de masa ${A}. ¿Cuántos electrones tiene?`,
+    ok:`${e}`, malos:[`${Z}`,`${A-Z}`,`${Z+carga}`,`${A}`],
+    key:`Los electrones cambian con la carga, los protones nunca. Un ion positivo perdió electrones; uno negativo los ganó.`,
+    dev:[`Protones = numero atomico = ${Z} (no cambia nunca)`,
+         `Neutrones = A - Z = ${A} - ${Z} = ${A-Z}`,
+         `En el atomo neutro habria ${Z} electrones`,
+         `La carga es ${signo}, asi que ${carga > 0 ? "perdio " + carga + " electron(es)" : "gano " + Math.abs(carga) + " electron(es)"}`,
+         `Electrones = ${Z} - (${carga}) = ${e}`]});
+}},
+
+{s:"Química", t:"Leyes de los gases", hacer(){
+  const P1 = elige([1,2,3,4]), V1 = elige([2,4,6,10,12]);
+  const P2 = elige([1,2,3,6,8]);
+  const V2 = P1*V1/P2;
+  if(P1 === P2 || !Number.isInteger(V2)) return null;
+  return reactivo({s:"Química", t:"Leyes de los gases", mono:false,
+    q:`Un gas ocupa ${V1} L a ${P1} atm. Si la temperatura se mantiene constante y la presión cambia a ${P2} atm, ¿qué volumen ocupará?`,
+    ok:`${V2} L`, malos:[`${red(V1*P2/P1,2)} L`,`${V1} L`,`${P1*V1*P2} L`,`${red(V2/2,2)} L`],
+    key:`Ley de Boyle: a temperatura constante, presión y volumen son inversamente proporcionales. Si la presión sube, el volumen baja.`,
+    dev:[`P1 V1 = P2 V2  (temperatura constante)`,
+         `${P1} x ${V1} = ${P2} x V2`,
+         `V2 = ${P1*V1} / ${P2} = ${V2} L`,
+         `La presion ${P2 > P1 ? "subio" : "bajo"}, asi que el volumen debia ${P2 > P1 ? "bajar" : "subir"}: ${V2} ${V2 < V1 ? "<" : ">"} ${V1} ✓`]});
+}},
+
+{s:"Química", t:"pH", hacer(){
+  const n = ri(2,12);
+  const acido = n < 7, neutro = n === 7;
+  return reactivo({s:"Química", t:"pH", mono:false,
+    q:`Una disolución tiene una concentración de iones hidrógeno de 1 × 10${sup("−"+n)} M. Su pH y su carácter son:`,
+    ok:`pH = ${n}, ${neutro ? "neutra" : acido ? "ácida" : "básica"}`,
+    malos:[`pH = ${n}, ${acido ? "básica" : "ácida"}`,`pH = ${14-n}, ${acido ? "ácida" : "básica"}`,
+           `pH = ${n}, neutra`,`pH = ${14-n}, ${neutro ? "neutra" : acido ? "básica" : "ácida"}`],
+    key:`pH = −log[H⁺], así que con potencias de diez el pH es el exponente sin el signo. Menor que 7 es ácido, mayor es básico.`,
+    dev:[`pH = -log[H+]`,
+         `[H+] = 1 x 10^-${n}`,
+         `pH = -log(10^-${n}) = ${n}`,
+         `Como ${n} ${neutro ? "es igual a" : n < 7 ? "es menor que" : "es mayor que"} 7, la disolucion es ${neutro ? "neutra" : acido ? "acida" : "basica"}`,
+         `El pOH seria 14 - ${n} = ${14-n}`]});
+}},
+
+{s:"Química", t:"Estequiometría", hacer(){
+  const n = elige([1,3,5]);
+  const nom = ["metano","","propano","","pentano"][n-1];
+  const MC = 12*n + (2*n+2);
+  const g = MC*elige([2,4,5]);
+  const molCO2 = (g/MC)*n;
+  const gCO2 = molCO2*44;
+  return reactivo({s:"Química", t:"Estequiometría", mono:false,
+    q:`Al quemar por completo ${g} g de ${nom} (masa molar ${MC} g/mol), ¿cuántos gramos de CO₂ se producen? (masa molar del CO₂ = 44 g/mol)`,
+    ok:`${red(gCO2,1)} g`, malos:[`${red(g/MC*44,1)} g`,`${red(molCO2,1)} g`,`${g} g`,`${red(gCO2*2,1)} g`],
+    key:`Tres pasos: gramos a moles, moles de reactivo a moles de producto con la proporción de la ecuación, y moles de vuelta a gramos.`,
+    dev:[`Ecuacion:  C${n}H${2*n+2} + ${(3*n+1)/2} O2 -> ${n} CO2 + ${n+1} H2O`,
+         `Moles de combustible:  ${g} / ${MC} = ${red(g/MC,2)} mol`,
+         `Proporcion 1 : ${n},  moles de CO2 = ${red(g/MC,2)} x ${n} = ${red(molCO2,2)} mol`,
+         `Masa de CO2 = ${red(molCO2,2)} x 44 = ${red(gCO2,1)} g`]});
+}},
+
+{s:"Química", t:"Número de oxidación", hacer(){
+  const cs = [["H₂SO₄","S",6],["HNO₃","N",5],["KMnO₄","Mn",7],["K₂Cr₂O₇","Cr",6],
+              ["H₃PO₄","P",5],["HClO₄","Cl",7],["Na₂SO₃","S",4],["HClO₃","Cl",5],
+              ["HNO₂","N",3],["H₂SO₃","S",4],["KClO₃","Cl",5],["Na₂CO₃","C",4],
+              ["HClO","Cl",1],["H₃BO₃","B",3],["Na₂CrO₄","Cr",6],["KIO₃","I",5],
+              ["H₂CO₃","C",4],["NaNO₃","N",5],["MnO₂","Mn",4],["SO₃","S",6]];
+  const [f,el,ox] = elige(cs);
+  return reactivo({s:"Química", t:"Número de oxidación", mono:false,
+    q:`¿Cuál es el número de oxidación del ${el} en el compuesto ${f}?`,
+    ok:`${ox > 0 ? "+" + ox : ox}`, malos:[`+${ox-1}`,`+${ox+1}`,`−${ox}`,`+2`],
+    key:`Parte de los que ya sabes: hidrógeno +1, oxígeno −2, metales alcalinos +1. La suma de todos debe dar la carga total, que en un compuesto neutro es cero.`,
+    dev:[`En un compuesto neutro la suma de los numeros de oxidacion es cero`,
+         `Hidrogeno vale +1 y oxigeno vale -2`,
+         `Plantea la ecuacion con el elemento buscado como incognita`,
+         `Al despejar, el ${el} queda con ${ox > 0 ? "+" + ox : ox}`]});
 }}
 
 ];
@@ -2329,13 +2765,26 @@ function porFrescura(gs){
 
 const pesos = () => PERFILES[area].pesos;
 const totalExamen = () => Object.values(pesos()).reduce((a,b)=>a+b,0);
+/* Módulos que no entran en todos los perfiles.
+
+   Cálculo: la UNAM lo pide en las áreas 1 y 2, no en la 3 ni en la 4;
+   el IPN lo pide en sus tres áreas, porque su temario de matemáticas
+   es común y trae límites, derivada e integral. Yo lo tenía marcado
+   como exclusivo del IPN, y eso era falso.
+
+   Química del carbono: exclusiva del área 2 de la UNAM. Queda por
+   confirmar si el IPN la pide en CMB. */
+const MODULOS = {
+  calculo: ["u1","u2","iICFM","iCMB","iCSA","m1","m2","m3"],
+  carbono: ["u2","m2"]
+};
+
 /* El banco vivo: los reactivos escritos a mano más los que produjeron
-   los generadores para este examen. Los temas marcados solo:"IPN"
-   (cálculo) no aparecen en un simulacro de la UNAM, porque ahí no se
-   evalúan. Sí entran en el del IPN, en el mixto y en práctica. */
+   los generadores para este examen. Fuera de simulacro no se filtra por
+   módulo: en práctica se puede estudiar cualquier tema. */
 const fuente = () => BANK.concat(GENERADOS).filter(q =>
   (conReto || q.nivel !== "reto") &&
-  (!q.solo || modo !== "simulacro" || inst === "Mixto" || q.solo === inst));
+  (!q.modulo || modo !== "simulacro" || (MODULOS[q.modulo] || []).includes(area)));
 const RETOS = BANK.filter(q => q.nivel === "reto");
 
 /* ===================== PORTADA ===================== */
@@ -2346,6 +2795,16 @@ function chip(padre, texto, activo, alClic){
   b.onclick = alClic;
   $(padre).appendChild(b);
   return b;
+}
+
+/* Marcador de versión. Los números salen del banco en vivo, así que no
+   pueden quedar desfasados: si lo que ves aquí no coincide con lo que
+   esperas, es que el navegador está sirviendo una copia vieja. */
+const VERSION = "v12";
+function pintarVersion(){
+  const temas = new Set(BANK.map(q => q.t)).size;
+  $("version").textContent = VERSION + " · " + BANK.length + " reactivos escritos · " +
+    GEN.length + " generadores · " + temas + " temas · " + RETOS.length + " problemas de reto";
 }
 
 function pintarMemoria(){
@@ -2491,6 +2950,31 @@ function bloques(lista){
   return out;
 }
 
+/* Reparte por tema: primero un bloque de cada tema, luego un segundo de
+   cada uno, y así. Sin esto el muestreo es al azar sobre toda la bolsa y
+   por mala suerte deja fuera temas completos — circunferencia faltaba en
+   8 de cada 20 simulacros. Un examen real cubre el temario, no sortea.
+
+   En las materias escritas a mano casi cada reactivo tiene su propio
+   tema, así que ahí esto no cambia nada. Donde importa es en las
+   materias con generadores, que producen decenas de reactivos del
+   mismo tema. */
+function porTema(gs){
+  const filas = new Map();
+  gs.forEach(g => {
+    const t = g[0].t || "";
+    if(!filas.has(t)) filas.set(t, []);
+    filas.get(t).push(g);
+  });
+  const colas = [...filas.values()], out = [];
+  let quedan = true;
+  while(quedan){
+    quedan = false;
+    for(const c of colas){ if(c.length){ out.push(c.shift()); quedan = true; } }
+  }
+  return out;
+}
+
 /* `usados` trae los ids que ya entraron en otra sección de este mismo
    examen. Hace falta porque dos secciones pueden solaparse: un reactivo
    de Literatura encadenado a un poema califica también como Competencia
@@ -2498,7 +2982,7 @@ function bloques(lista){
 function tomar(seccion, n, usados){
   const ff = filtroDe(seccion);
   const f = usados ? (q => ff(q) && !usados.has(q.id)) : ff;
-  const gs = porFrescura(bloques(fuente().filter(f)));
+  const gs = porTema(porFrescura(bloques(fuente().filter(f))));
   const out = [];
   for(const g of gs){
     if(out.length + g.length <= n) out.push(...g);
@@ -2856,6 +3340,7 @@ $("mantenerSesion").onclick = ()=>{ ocultarAvisoInactivo(); pedirWakeLock(); };
 
 /* una tanda inicial, para que la portada muestre cuántos reactivos hay de verdad */
 generar(POR_GENERADOR);
+pintarVersion();
 paintCover();
 </script>
 <script>
